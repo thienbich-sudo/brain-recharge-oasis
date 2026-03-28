@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../i18n/LangContext';
-import { XCircle, Trophy, Heart, Zap, Medal } from 'lucide-react';
+import { XCircle, Trophy, Heart, Zap, Medal, SkipForward, RotateCcw } from 'lucide-react';
 
 interface Props {
   mood: string;
@@ -173,19 +173,23 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
     }
   }, [phaseIdx, lang, isFinished]);
 
+  const handleSkipPhase = () => {
+    if (phaseIdx >= flow.phases.length - 1) {
+       const quotes = MOOD_QUOTES[mood] || MOOD_QUOTES['stress'];
+       setRewardQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+       setIsFinished(true);
+    } else {
+       const nextPhaseIdx = phaseIdx + 1;
+       setPhaseIdx(nextPhaseIdx);
+       setTimeLeft(flow.phases[nextPhaseIdx].time);
+    }
+  };
+
   useEffect(() => {
     if (isFinished) return;
 
     if (timeLeft <= 0) {
-      if (phaseIdx >= flow.phases.length - 1) {
-         const quotes = MOOD_QUOTES[mood] || MOOD_QUOTES['stress'];
-         setRewardQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-         setIsFinished(true);
-      } else {
-         const nextPhaseIdx = phaseIdx + 1;
-         setPhaseIdx(nextPhaseIdx);
-         setTimeLeft(flow.phases[nextPhaseIdx].time);
-      }
+      handleSkipPhase();
       return;
     }
 
@@ -212,8 +216,24 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
              <h2 className="text-2xl md:text-3xl font-display font-light text-white leading-relaxed">
                {l(flow.phases[phaseIdx].text)}
              </h2>
-             <div className="mt-12 text-6xl font-display font-light text-white/20">
-               00:{timeLeft.toString().padStart(2, '0')}
+             <div className="mt-12 flex items-center justify-center gap-6 z-20">
+                <button 
+                  onClick={() => setTimeLeft(flow.phases[phaseIdx].time)}
+                  className="p-3 md:p-4 rounded-full bg-white/5 hover:bg-white/10 text-white/30 hover:text-white/80 transition-all border border-transparent hover:border-white/10 shadow-sm"
+                  title={l({vi: 'Bắt đầu lại vòng này', en: 'Restart phase', zh: '重新开始此阶段'})}
+                >
+                   <RotateCcw size={20} />
+                </button>
+                <div className="text-6xl md:text-7xl font-display font-light text-white/20 tabular-nums">
+                  00:{timeLeft.toString().padStart(2, '0')}
+                </div>
+                <button 
+                  onClick={handleSkipPhase}
+                  className="p-3 md:p-4 rounded-full bg-white/5 hover:bg-white/10 text-white/30 hover:text-white/80 transition-all border border-transparent hover:border-white/10 shadow-sm"
+                  title={l({vi: 'Bỏ qua (Tiến tới)', en: 'Skip phase', zh: '跳过此阶段'})}
+                >
+                   <SkipForward size={20} />
+                </button>
              </div>
              
              {/* Dynamic Visualizer - Premium Lotus Core */}
