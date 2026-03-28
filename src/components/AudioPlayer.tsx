@@ -4,14 +4,13 @@ import { Play, Pause, FastForward, Rewind, Volume2, Music } from 'lucide-react';
 import { useLanguage } from '../i18n/LangContext';
 
 const playlist = [
-  { id: 't1', title: 'J.S. Bach - Goldberg Variations', desc: { vi: 'Focus & Tư duy logic', en: 'Focus & Logic (Alpha)', zh: '深度专注与逻辑' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', color: '#60a5fa' },
-  { id: 't2', title: 'F. Chopin - Nocturnes', desc: { vi: 'Giải tỏa cảm xúc', en: 'Emotional Release', zh: '情感释放' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', color: '#c084fc' },
-  { id: 't3', title: 'C. Debussy - Clair de Lune', desc: { vi: 'Trạng thái tuôn trào', en: 'Abstract Flow State', zh: '抽象心流状态' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', color: '#34d399' },
-  { id: 't4', title: 'W.A. Mozart - Sonata', desc: { vi: 'Đồng bộ hai bán cầu não', en: 'Brain Sync & Clarity', zh: '左右脑同步' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3', color: '#facc15' },
-  { id: 't5', title: 'Rain & Thunder', desc: { vi: 'Tiếng ồn trắng tự nhiên', en: 'Nature White Noise', zh: '自然白噪音' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3', color: '#94a3b8' },
-  { id: 't6', title: 'Deep Space Ambient', desc: { vi: 'Tách biệt trần gian', en: 'Zero Distraction Focus', zh: '零分心专注' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3', color: '#f472b6' },
-  { id: 't7', title: 'Lo-Fi Cafe Vibes', desc: { vi: 'Nhịp điệu nền nhẹ nhàng', en: 'Light Background Groove', zh: '轻快的背景节奏' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3', color: '#fb923c' },
-  { id: 't8', title: 'Himalayan Singing Bowls', desc: { vi: 'Thiền định & Sóng Theta', en: 'Meditation & Theta Waves', zh: '冥想与Theta脑波' }, url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3', color: '#14b8a6' },
+  { id: 't1', title: 'Groove Salad (Lo-Fi / Beats)', desc: { vi: 'Nhịp điệu nền nhẹ nhàng', en: 'Light Background Groove', zh: '轻快的背景节奏' }, url: 'https://ice1.somafm.com/groovesalad-128-mp3', color: '#34d399' },
+  { id: 't2', title: 'NASA Deep Space One', desc: { vi: 'Tách biệt trần gian (Deep Focus)', en: 'Zero Distraction Focus', zh: '零分心专注' }, url: 'https://ice1.somafm.com/deepspaceone-128-mp3', color: '#c084fc' },
+  { id: 't3', title: 'DEF CON Radio', desc: { vi: 'Hack & Code Focus', en: 'Cyberpunk Focus', zh: '深度代码专注' }, url: 'https://ice1.somafm.com/defcon-128-mp3', color: '#14b8a6' },
+  { id: 't4', title: 'Drone Zone', desc: { vi: 'Siêu Thư Giãn (Sleep)', en: 'Atmospheric Ambient', zh: '极度放松氛围' }, url: 'https://ice1.somafm.com/dronezone-128-mp3', color: '#f472b6' },
+  { id: 't5', title: 'C. Debussy - Clair de Lune', desc: { vi: 'Trạng thái tuôn trào (Piano)', en: 'Abstract Flow State', zh: '抽象心流状态' }, url: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Claude_Debussy_-_Clair_de_lune.ogg', color: '#60a5fa' },
+  { id: 't6', title: 'J.S. Bach - Goldberg Aria', desc: { vi: 'Thiền định & Logic', en: 'Meditation & Logic', zh: '静心与逻辑' }, url: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Bach_-_Goldberg_Variations%2C_BWV_988_-_01_-_Aria.ogg', color: '#facc15' },
+  { id: 't7', title: 'W.A. Mozart - Symphony 40', desc: { vi: 'Đồng bộ hai bán cầu não', en: 'Brain Sync & Clarity', zh: '左右脑同步' }, url: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Mozart_-_Symphony_No_40_-_1st_Movement.ogg', color: '#fb923c' },
 ];
 
 export default function AudioPlayer() {
@@ -71,7 +70,7 @@ export default function AudioPlayer() {
 
   return (
     <div className="flex flex-col items-center justify-between h-full w-full max-w-2xl px-4 py-4 md:py-6">
-      <audio ref={audioRef} src={activeTrack.url} onEnded={nextTrack} crossOrigin="anonymous"/>
+      <audio ref={audioRef} src={activeTrack.url} onEnded={nextTrack} />
       
       {/* Visualizer Mock */}
       <div className="flex items-center justify-center gap-1.5 h-20 md:h-32 w-full shrink-0 my-auto">
