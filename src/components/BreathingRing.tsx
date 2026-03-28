@@ -239,111 +239,114 @@ export default function BreathingRing() {
   const animProps = getAnimProps();
 
   return (
-    <div className="flex flex-col items-center justify-between p-2 md:p-6 w-full max-w-2xl h-full relative">
+    <div className="flex flex-col items-center justify-between p-4 md:p-8 w-full max-w-xl mx-auto h-full relative overflow-hidden">
       
-      {/* Controls Toggle */}
-      <div className="absolute top-2 right-2 flex flex-col gap-2 z-50">
-        <button 
-          onClick={() => setIsPaused(!isPaused)}
-          className={`flex items-center gap-2 px-3 py-1.5 md:py-2 rounded-full transition-all border shadow-lg
-            ${isPaused ? 'bg-orange-500/20 border-orange-500/50 text-orange-200' : 'bg-white/10 border-white/30 text-white hover:bg-white/20'}`}
-        >
-          {isPaused ? <Play size={14} /> : <Pause size={14} />}
-          <span className="text-[10px] md:text-xs font-sans tracking-wide uppercase font-bold">
-            {isPaused ? {vi: 'TIẾP TỤC', en: 'RESUME', zh: '继续'}[lang] : {vi: 'TẠM DỪNG', en: 'PAUSE', zh: '暂停'}[lang]}
-          </span>
-        </button>
-        <button 
-          onClick={() => setIsVoiceOn(!isVoiceOn)}
-          className={`flex items-center gap-2 px-3 py-1.5 md:py-2 rounded-full transition-all border shadow-lg
-            ${isVoiceOn ? 'bg-white/10 border-white/30 text-white' : 'bg-transparent border-white/10 text-white/30 hover:bg-white/5'}`}
-        >
-          {isVoiceOn ? <Ear size={14} /> : <EarOff size={14} />}
-          <span className="text-[10px] md:text-xs font-sans tracking-wide uppercase font-bold">
-            {isVoiceOn ? {vi: 'CÓ TIẾNG', en: 'VOICE ON', zh: '语音开启'}[lang] : {vi: 'TẮT TIẾNG', en: 'VOICE OFF', zh: '静音模式'}[lang]}
-          </span>
-        </button>
+      {/* Sleek Top Controls */}
+      <div className="flex items-center justify-between w-full mb-6 z-50">
+        <div className="flex bg-white/5 rounded-full p-1 border border-white/10 backdrop-blur-md">
+           {['breath', 'upper', 'full'].map((cat) => (
+               <button 
+                 key={cat}
+                 onClick={() => {
+                     setActiveCategory(cat as any); 
+                     setMode(Object.keys(modes).find(k => modes[k].cat === cat)!);
+                 }} 
+                 className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all ${activeCategory === cat ? 'bg-white/15 text-white shadow-md' : 'text-transparent text-white/40 hover:text-white/70'}`}
+               >
+                   {getCatLabel(cat)}
+               </button>
+           ))}
+        </div>
+
+        <div className="flex gap-2">
+           <button 
+             onClick={() => setIsVoiceOn(!isVoiceOn)}
+             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isVoiceOn ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/5 text-white/30 hover:bg-white/10'}`}
+           >
+             {isVoiceOn ? <Ear size={16} /> : <EarOff size={16} />}
+           </button>
+           <button 
+             onClick={() => setIsPaused(!isPaused)}
+             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isPaused ? 'bg-orange-500/20 border-orange-500/30 text-orange-200' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+           >
+             {isPaused ? <Play size={16} fill="currentColor" className="ml-0.5" /> : <Pause size={16} fill="currentColor" />}
+           </button>
+        </div>
       </div>
 
-      {/* Top Filter */}
-      <div className="flex items-center gap-2 md:gap-4 mt-2 w-full justify-center">
-         {['breath', 'upper', 'full'].map((cat) => (
-             <button 
-               key={cat}
-               onClick={() => {
-                   setActiveCategory(cat as any); 
-                   setMode(Object.keys(modes).find(k => modes[k].cat === cat)!);
-               }} 
-               className={`px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all border ${activeCategory === cat ? 'bg-white/20 border-white/40 text-white shadow-md' : 'border-transparent text-white/30 hover:text-white/60'}`}
-             >
-                 {getCatLabel(cat)}
-             </button>
-         ))}
+      <div className="text-center w-full z-20 shrink-0 mt-4 md:mt-8">
+        <h2 className={`text-2xl md:text-4xl font-display font-light mb-1 transition-colors duration-500 max-w-sm mx-auto ${c.text}`}>
+          {phaseText}
+        </h2>
+        <p className="text-[10px] md:text-xs font-sans text-white/40 uppercase tracking-widest mt-2 px-4">
+          — {l(modes[mode].desc)} —
+        </p>
       </div>
 
-      {/* Main Animation Ring */}
-      <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center my-6 shrink-0 z-10">
-        <motion.div className="absolute inset-0 rounded-full blur-[40px] opacity-40 mix-blend-screen"
+      {/* Hero Visualizer - The Orbital Breathing Core */}
+      <div className="relative w-56 h-56 md:w-72 md:h-72 flex items-center justify-center my-auto shrink-0 z-10">
+        
+        {/* Orbital Rings */}
+        <motion.div className="absolute inset-0 rounded-full border border-white/5 border-t-white/20 border-b-white/20"
+          animate={{ rotate: 360, ...animProps }} transition={{ duration: phaseDur, ease: "easeInOut" }}
+        />
+        <motion.div className="absolute inset-4 rounded-full border border-white/5 border-l-white/20 border-r-white/20"
+          animate={{ rotate: -360, ...animProps }} transition={{ duration: phaseDur, ease: "easeInOut" }}
+        />
+        
+        {/* Deep Glow Aura */}
+        <motion.div className="absolute inset-8 rounded-full blur-[40px] opacity-30 mix-blend-screen"
           style={{ backgroundColor: c.glow }}
           animate={animProps}
-          transition={{ duration: phaseDur, ease: "linear" }}
+          transition={{ duration: phaseDur, ease: "easeInOut" }}
         />
-        <motion.div className="absolute w-36 h-36 md:w-48 md:h-48 rounded-full border-[3px] flex items-center justify-center backdrop-blur-md z-20 overflow-hidden"
-          style={{ borderColor: c.ringBorder, backgroundColor: c.ringBg, boxShadow: `0 0 35px ${c.shadow}` }}
+
+        {/* Central Glass Core */}
+        <motion.div className="absolute inset-8 rounded-full border-[2px] flex flex-col items-center justify-center backdrop-blur-xl z-20 shadow-2xl overflow-hidden"
+          style={{ borderColor: c.ringBorder, backgroundColor: c.ringBg, boxShadow: `0 0 40px ${c.shadow}, inset 0 0 20px ${c.shadow}` }}
           animate={animProps}
-          transition={{ duration: phaseDur, ease: "linear" }}
+          transition={{ duration: phaseDur, ease: "easeInOut" }}
         >
-          {/* Avatar Hướng Dẫn */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-1 md:pt-2 opacity-90 pointer-events-none">
+          {/* Avatar / Iconography */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-2 opacity-80 pointer-events-none">
              <ZenAvatar anim={currentStep.anim} mode={mode} />
           </div>
 
-          <div className="absolute bottom-3 md:bottom-4 w-full flex justify-center pointer-events-none">
+          <div className="absolute bottom-6 w-full flex justify-center pointer-events-none">
             <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span 
                     key={`${stepIdx}-${timeLeft === -1 ? '0' : timeLeft}`}
-                    initial={{ opacity: 0, y: 5, scale: 0.8 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -5, scale: 1.2 }}
+                    initial={{ opacity: 0, y: 5, filter: "blur(4px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: -5, filter: "blur(4px)" }}
                     transition={{ duration: 0.2 }}
-                    className="text-lg md:text-xl font-display font-bold text-white/80 drop-shadow-md bg-black/40 px-4 py-1 rounded-full backdrop-blur-md border border-white/10"
+                    className="text-2xl md:text-3xl font-display font-light text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]"
                 >
-                    {timeLeft === -1 ? '' : timeLeft}s
+                    {timeLeft === -1 ? '' : timeLeft}
                 </motion.span>
             </AnimatePresence>
           </div>
         </motion.div>
       </div>
 
-      <div className="text-center h-20 w-full px-2 z-20 shrink-0">
-        <h2 className={`text-xl md:text-3xl font-display font-light mb-1 transition-colors duration-500 max-w-sm mx-auto ${c.text}`}>
-          {phaseText}
-        </h2>
-        <p className="text-[10px] md:text-xs font-sans text-white/50 uppercase tracking-widest mt-2 px-4">
-          — {l(modes[mode].desc)} —
-        </p>
-      </div>
-
-      {/* Routine Selector - Horizontal Scroll */}
-      <div className="w-full flex gap-3 overflow-x-auto pb-4 pt-2 px-4 scrollbar-hide snap-x pointer-events-auto h-20 shrink-0 mt-auto" 
-           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+      {/* Routine Grid - Perfect Centering & Anti-Layout-Shift */}
+      <div className="w-full grid grid-cols-2 gap-3 mt-auto shrink-0 pb-20 pointer-events-auto">
         {currentCategoryModes.map(k => (
           <button 
             key={k}
             onClick={() => setMode(k)}
-            className={`flex-shrink-0 flex items-center gap-3 px-3 py-2 rounded-xl transition-all border snap-center min-w-[170px] h-14
-              ${mode === k ? 'bg-white/15 border-white/30 shadow-md scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}
+            className={`flex items-center gap-3 p-3 md:p-4 rounded-2xl transition-all border h-16 md:h-20
+              ${mode === k ? 'bg-white/10 border-white/30 shadow-lg scale-105 z-10' : 'bg-transparent border-white/5 hover:bg-white/5'}`}
           >
-            <div className="w-7 h-7 rounded-full flex flex-shrink-0 items-center justify-center bg-black/40 shadow-inner" style={{ color: c.glow }}>
+            <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex shrink-0 items-center justify-center transition-colors ${mode === k ? 'bg-black/40' : 'bg-black/20'}`} style={{ color: c.glow }}>
               {modes[k].icon}
             </div>
             <div className="text-left flex-1 min-w-0">
-              <p className="text-xs font-semibold text-white/90 truncate leading-tight w-full whitespace-nowrap">{l(modes[k].name)}</p>
+              <p className={`text-xs md:text-sm font-semibold truncate transition-colors ${mode === k ? 'text-white' : 'text-white/60'}`}>{l(modes[k].name)}</p>
             </div>
           </button>
         ))}
       </div>
-
     </div>
   );
 }
