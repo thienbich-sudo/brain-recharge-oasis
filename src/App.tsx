@@ -10,6 +10,7 @@ import BrainDump from './components/BrainDump';
 import MoodGate from './components/MoodGate';
 import AmbientMixer from './components/AmbientMixer';
 import BinauralGenerator from './components/BinauralGenerator';
+import AutoPilotFlow from './components/AutoPilotFlow';
 import { useLanguage } from './i18n/LangContext';
 
 export default function App() {
@@ -23,11 +24,8 @@ export default function App() {
 
   const handleCheckIn = (mood: string) => {
      setHasCheckedIn(true);
-     // Lựa chọn thông minh tùy theo cảm trạng
-     if (mood === 'focus') setActiveModule('binaural');
-     if (mood === 'stress') setActiveModule('breathe'); // Will default to the currently chosen mode (or just load the module)
-     if (mood === 'burnout') setActiveModule('audio');
-     if (mood === 'sleepy') setActiveModule('mixer');
+     // Enable AutoPilot Journey
+     setActiveModule(`autopilot_${mood}`);
   };
 
   const navItems = [
@@ -70,12 +68,26 @@ export default function App() {
         className="w-full h-full md:w-11/12 max-w-5xl md:h-[85vh] md:mt-[4vh] bg-transparent md:glass-panel flex flex-col items-center z-10 md:shadow-2xl relative md:rounded-3xl md:border-white/10"
       >
         <div className="w-full flex-1 flex items-center justify-center overflow-hidden relative md:rounded-2xl pb-24 md:pb-0 z-10 md:bg-black/20 md:border md:border-white/5">
-          {activeModule === 'audio' && <AudioPlayer />}
-          {activeModule === 'mixer' && <AmbientMixer />}
-          {activeModule === 'binaural' && <BinauralGenerator />}
-          {activeModule === 'canvas' && <WatercolorCanvas />}
-          {activeModule === 'breathe' && <BreathingRing />}
-          {activeModule === 'dump' && <BrainDump onBurn={() => setSeeds(s => s + 1)} />}
+          {/* BACKGROUND PERSISTENT AUDIO MODULES */}
+          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'audio' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+            <AudioPlayer />
+          </div>
+          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'mixer' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+            <AmbientMixer />
+          </div>
+          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'binaural' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+            <BinauralGenerator />
+          </div>
+
+          {/* DYNAMIC UNMOUNTABLE MODULES */}
+          {activeModule === 'canvas' && <div className="absolute inset-0 z-10"><WatercolorCanvas /></div>}
+          {activeModule === 'breathe' && <div className="absolute inset-0 z-10"><BreathingRing /></div>}
+          {activeModule === 'dump' && <div className="absolute inset-0 z-10"><BrainDump onBurn={() => setSeeds(s => s + 1)} /></div>}
+          {activeModule.startsWith('autopilot_') && (
+             <div className="absolute inset-0 z-50">
+               <AutoPilotFlow mood={activeModule.split('_')[1]} onExit={() => setActiveModule('audio')} />
+             </div>
+          )}
         </div>
       </motion.main>
 
