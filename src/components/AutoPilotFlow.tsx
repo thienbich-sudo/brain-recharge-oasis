@@ -45,32 +45,32 @@ const FLOWS: Record<string, any> = {
 
 const MOOD_QUOTES: Record<string, Array<{vi: string, en: string, zh: string, author: string}>> = {
   stress: [
-    { vi: "Người chiến binh tĩnh lặng giữa tâm bão, bởi bão tồn tại bên ngoài, không phải bên trong.", en: "The warrior is still amidst the storm, for the storm is outside, not within.", zh: "战士在风暴中保持静止，因为风暴在外面，而不在心里。", author: "Antigravity Zen" },
-    { vi: "Đừng cầu mong một gánh nặng nhẹ đi, hãy cầu mong một bờ vai mạnh mẽ hơn.", en: "Do not pray for an easy life, pray for the strength to endure a difficult one.", zh: "不要祈求轻松的生活，祈求有力量忍受艰难的生活。", author: "Bruce Lee" },
-    { vi: "Nơi nào có sự tĩnh lặng tuyệt đối, nơi đó có sức mạnh hủy diệt.", en: "Where there is absolute silence, there is destructive power.", zh: "绝对寂静之处，蕴含着毁灭性的力量。", author: "Sun Tzu" },
-    { vi: "Giữ tâm trí phẳng lặng như mặt hồ, để phản chiếu ánh chớp của gươm đao.", en: "Keep the mind still as a lake, to reflect the flash of the blade.", zh: "心静如水，映出剑的闪光。", author: "Miyamoto Musashi" },
-    { vi: "Sự bình tĩnh của bạn là vũ khí trí mạng nhất đối phó với sự hỗn loạn.", en: "Your calm is the most lethal weapon against chaos.", zh: "你的冷静是对抗混乱最致命的武器。", author: "Stoic Core" }
+    { vi: "Bức tranh đẹp nhất luôn có mảng tối. Hãy hít một hơi thật sâu và vẽ tiếp cuộc đời bạn.", en: "The most beautiful paintings have dark shades. Take a deep breath and keep painting your life.", zh: "最美的画总是伴有暗角。深吸一口气，继续描绘你的人生。", author: "Oasis Flow" },
+    { vi: "Đừng cố gồng mình chống lại cơn bão, hãy mềm mại như cành trúc và để gió lướt qua.", en: "Don't fight the storm, be as supple as bamboo and let the wind pass over.", zh: "别硬扛风暴，像竹子一样柔软，让风轻轻拂过。", author: "Zen Whisper" },
+    { vi: "Bầu trời vẫn luôn xanh ngắt phía trên những đám mây. Bạn chỉ cần chờ mây tan.", en: "The sky is always blue above the clouds. You just have to wait for them to part.", zh: "云层之上总是湛蓝的天空。你只需静候云散。", author: "Morning Light" },
+    { vi: "Gạt bỏ mọi lo âu, thu mình lại một nhịp, để nhịp đập trái tim hòa cùng bản nhạc.", en: "Brush away the worries, step back a beat, and let your heartbeat sync with the melody.", zh: "抛开所有烦忧，退后一拍，让心跳与旋律共鸣。", author: "Therapy Core" },
+    { vi: "Chỉ cần thay đổi góc nhìn, mây mù tăm tối sẽ hóa thành một buổi chiều mộng mơ.", en: "Change your perspective, and dark clouds will turn into a dreamy afternoon.", zh: "只需改变视角，乌云密布也会化作如梦的午后。", author: "Attitude Shift" }
   ],
   burnout: [
-    { vi: "Người chiến binh thực thụ là người biết rũ bỏ mệt mỏi trong một cái chớp mắt.", en: "The true warrior sheds exhaustion in a single blink.", zh: "真正的战士在眨眼间褪去疲惫。", author: "Antigravity Zen" },
-    { vi: "Đáy của sự cạn kiệt chính là điểm khởi đầu của nguồn sức mạnh mới.", en: "The bottom of exhaustion is the genesis of new power.", zh: "筋疲力尽的谷底，正是新力量的起点。", author: "Phoenix Code" },
-    { vi: "Bạn không thể gục ngã, nếu bạn không cho phép tâm trí mình bỏ cuộc.", en: "You cannot fall, if you do not allow your mind to surrender.", zh: "如果你不让你的内心屈服，你就不会倒下。", author: "Stoic Core" },
-    { vi: "Trở ngại trên đường đi, chính là con đường.", en: "The obstacle in the path becomes the path.", zh: "路上的障碍，本身就是路。", author: "Marcus Aurelius" },
-    { vi: "Nghỉ ngơi không phải là lùi bước, mà là mài lại thanh gươm đang mẻ.", en: "Resting is not retreating, but sharpening the chipped blade.", zh: "休息不是退缩，而是磨砺崩口的刀刃。", author: "Zen M." }
+    { vi: "Mệt mỏi không có nghĩa bạn kém cỏi. Đó chỉ là lời nhắc nhở rằng cơ thể cũng cần được ôm ấp.", en: "Exhaustion doesn't mean you're weak. It's just a reminder that your body needs a hug too.", zh: "疲惫不代表你很差劲。这只是提醒你，身体也需要被拥抱。", author: "Oasis Flow" },
+    { vi: "Hạt giống cần nằm sâu trong đất tối trước khi vươn mình đón nắng. Hãy nghỉ ngơi trọn vẹn nhé.", en: "A seed must lie in the dark earth before reaching for the sun. Rest fully.", zh: "种子在向着阳光生长前，必须深埋于黑暗的泥土。好好休息吧。", author: "Nature's Way" },
+    { vi: "Chẳng sao cả nếu hôm nay bạn chỉ muốn nằm yên. Bạn đã làm rất tốt rồi.", en: "It's okay if today you just want to lie still. You did great.", zh: "如果今天你只想静静躺着也没关系。你已经做得很好了。", author: "Gentle Breeze" },
+    { vi: "Mỗi lần bạn cho phép mình thư giãn, bạn đang dọn chỗ cho những điều kỳ diệu mới nở rộ.", en: "Every time you allow yourself to relax, you make room for new miracles to bloom.", zh: "每次你允许自己放松，都是在为新的奇迹绽放腾出空间。", author: "Mind Spa" },
+    { vi: "Thái độ của bạn quyết định màu sắc của ngày hôm nay. Hãy tự tin chọn gam màu rực rỡ nhất!", en: "Your attitude determines the color of today. Confidently choose the brightest one!", zh: "你的态度决定了今天的色彩。自信地选择最耀眼的那一种吧！", author: "Mindset Shift" }
   ],
   sleepy: [
-    { vi: "Thức tỉnh đi. Trận chiến không chờ đợi đôi mắt nhắm nghiền.", en: "Awaken. The battle does not wait for closed eyes.", zh: "醒来吧。战斗不会等待紧闭的双眼。", author: "Antigravity Zen" },
-    { vi: "Một tia lửa nhỏ cũng có thể thiêu rụi cả cánh rừng của sự trì trệ.", en: "A single spark can burn down the forest of lethargy.", zh: "星星之火可以烧毁迟钝的森林。", author: "Dojo Master" },
-    { vi: "Con thú săn mồi không ngáp trước khi nhảy, nó nhe nanh.", en: "The predator does not yawn before pouncing, it bares its fangs.", zh: "猛兽在扑向猎物之前不会打哈欠，它只会露出獠牙。", author: "Predator Mindset" },
-    { vi: "Gió gầm thét vĩ đại nhất khi cơn bão vừa bắt đầu. Hãy là cơn bão.", en: "The wind howls greatest when the storm begins. Be the storm.", zh: "风暴刚开始时风怒吼得最大。要做那阵风暴。", author: "Stoic Core" },
-    { vi: "Nhìn thẳng vào thực tại. Bóp nát sự yếu đuối.", en: "Stare into reality. Crush the weakness.", zh: "直视现实。粉碎软弱。", author: "Warrior's Code" }
+    { vi: "Một cái vươn vai thật đã, một nụ cười rạng rỡ và bạn đã sẵn sàng ôm trọn thế giới này!", en: "A deep stretch, a bright smile, and you are ready to embrace the whole world!", zh: "一个惬意的伸展，一个灿烂的微笑，你已经准备好拥抱整个世界了！", author: "Oasis Flow" },
+    { vi: "Bật dậy nào! Cà phê đã sẵn sàng và những niềm vui của ngày hôm nay đang gọi tên bạn.", en: "Up you go! The coffee is brewing and today's joys are calling your name.", zh: "起来吧！咖啡已经泡好，今天的快乐正在呼唤你的名字。", author: "Morning Sun" },
+    { vi: "Ánh nắng ngoài kia thật đẹp, đừng để những giấc mơ trưa làm mờ đi ánh sáng rực rỡ của bạn.", en: "The sunshine outside is beautiful, don't let mid-day dreams dim your brilliant light.", zh: "外面的阳光真美，别让午睡的梦境掩盖了你耀眼的光芒。", author: "Awake Spirit" },
+    { vi: "Hít vào nguồn năng lượng tươi mới, thở ra cơn buồn ngủ lười biếng. Khởi động thôi!", en: "Breathe in fresh energy, breathe out the lazy sleepiness. Let's get started!", zh: "吸入新鲜能量，呼出慵懒的小瞌睡。让我们开始吧！", author: "Vital Flow" },
+    { vi: "Chỉ cần chớp mắt một cái, dội một gáo nước mát lành và đón lấy nhịp điệu rộn ràng của công việc.", en: "Just blink once, splash some cool water, and welcome the lively rhythm of work.", zh: "只需眨个眼，泼点清凉的水，迎接工作那欢快的节奏吧。", author: "Active Mind" }
   ],
   focus: [
-    { vi: "Mũi tên chỉ trúng đích khi thế giới xung quanh biến mất hoàn toàn.", en: "The arrow hits the mark only when the surroundings completely vanish.", zh: "只有当周围世界完全消失时，箭才能命中目标。", author: "Archer's Zen" },
-    { vi: "Tia laser cắt đứt kim loại không nhờ bạo lực, mà nhờ tập trung tuyệt đối.", en: "A laser cuts metal not out of force, but absolute focus.", zh: "激光切割金属不是靠爆发力，而是靠绝对的专注。", author: "Antigravity Zen" },
-    { vi: "Kẻ đuổi theo hai con thỏ cùng lúc sẽ luôn trắng tay.", en: "The man who chases two rabbits catches neither.", zh: "同时追逐两只兔子的人，将一无所获。", author: "Confucius" },
-    { vi: "Sự xao nhãng là cái chết của thiên tài. Sự tĩnh tại là đặc quyền của chiến binh.", en: "Distraction is the death of genius. Stillness is the edge of the warrior.", zh: "分心是天才的坟墓。静心是战士的专利。", author: "Stoic Core" },
-    { vi: "Chỉ một nhát chém. Chỉ một mục tiêu. Không hề đắn đo.", en: "One strike. One target. No hesitation.", zh: "一击。一个目标。绝不犹豫。", author: "Miyamoto Musashi" }
+    { vi: "Tập trung không phải là ép buộc tâm trí, mà là uyển chuyển dẫn dắt nó trên một dòng chảy.", en: "Focus is not forcing the mind, but gracefully guiding it along a single flow.", zh: "专注不是强迫心智，而是优雅地引导它顺流而下。", author: "Oasis Flow" },
+    { vi: "Khi bạn dồn cả trái tim vào việc mình làm, mọi tiếng ồn sẽ hóa thành bản nhạc êm dịu.", en: "When you put your whole heart into what you do, all noise turns into a soothing melody.", zh: "当你全心投入所做之事，所有的喧嚣都会化作舒缓的旋律。", author: "Deep Work" },
+    { vi: "Gói ghém mọi lo toan sang một bên. Ngay lúc này, chỉ có bạn và tác phẩm tuyệt vời của riêng bạn.", en: "Put your worries aside. Right now, there is only you and your own beautiful creation.", zh: "把所有烦恼抛诸脑后。此时此刻，只有你和你那美妙的作品。", author: "Mind Artisan" },
+    { vi: "Hãy làm việc thật thong dong nhưng chắc chắn. Điều vĩ đại luôn được xây từ sự chú tâm nho nhỏ.", en: "Work leisurely but steadily. Great things are built from small, attentive moments.", zh: "从容而坚决地工作。伟大的事物都是由微小而专注的时刻堆砌而成的。", author: "Zen Master" },
+    { vi: "Bạn giống như một tia nắng xuyên qua lăng kính, hội tụ lại thành một điểm sáng lấp lánh.", en: "You are like a sunbeam passing through a prism, converging into a single, glittering point.", zh: "你就像穿过棱镜的阳光，汇聚成一个闪耀的光点。", author: "Focus Point" }
   ]
 };
 
