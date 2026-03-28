@@ -5,7 +5,7 @@ import ZenAvatar from './ZenAvatar';
 import { useLanguage } from '../i18n/LangContext';
 
 export default function BreathingRing() {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<'breath' | 'upper' | 'full'>('upper');
   const [mode, setMode] = useState<string>('neck');
   

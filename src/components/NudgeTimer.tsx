@@ -3,7 +3,7 @@ import { Bell, BellOff } from 'lucide-react';
 import { useLanguage } from '../i18n/LangContext';
 
 export default function NudgeTimer() {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const [isActive, setIsActive] = useState(false);
   const [minutesLeft, setMinutesLeft] = useState(20);
 

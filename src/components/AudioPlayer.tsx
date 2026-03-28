@@ -15,7 +15,7 @@ const playlist = [
 ];
 
 export default function AudioPlayer() {
-  const { lang, t } = useLanguage();
+  const { lang } = useLanguage();
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeTrackIdx, setActiveTrackIdx] = useState(0);
   const activeTrack = playlist[activeTrackIdx];
