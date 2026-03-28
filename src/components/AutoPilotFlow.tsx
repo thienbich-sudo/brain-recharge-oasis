@@ -43,13 +43,36 @@ const FLOWS: Record<string, any> = {
   }
 };
 
-const IGNITION_QUOTES = [
-  { vi: "Người chiến binh binh thực thụ là người biết rũ bỏ mệt mỏi trong một cái chớp mắt.", en: "The true warrior sheds exhaustion in a single blink.", zh: "真正的战士在眨眼间褪去疲惫。", author: "Antigravity Zen" },
-  { vi: "Trở ngại trên đường đi, chính là con đường.", en: "The obstacle in the path becomes the path.", zh: "路上的障碍，本身就是路。", author: "Marcus Aurelius" },
-  { vi: "Giữ tâm trí phẳng lặng như mặt hồ, để phản chiếu ánh chớp của gươm đao.", en: "Keep the mind still as a lake, to reflect the flash of the blade.", zh: "心静如水，映出剑的闪光。", author: "Miyamoto Musashi" },
-  { vi: "Nơi nào có sự tĩnh lặng tuyệt đối, nơi đó có sức mạnh hủy diệt.", en: "Where there is absolute silence, there is destructive power.", zh: "绝对寂静之处，蕴含着毁灭性的力量。", author: "Sun Tzu" },
-  { vi: "Bạn không thể gục ngã, nếu bạn không cho phép tâm trí mình bỏ cuộc.", en: "You cannot fall, if you do not allow your mind to surrender.", zh: "如果你不让你的内心屈服，你就不会倒下。", author: "Stoic Core" }
-];
+const MOOD_QUOTES: Record<string, Array<{vi: string, en: string, zh: string, author: string}>> = {
+  stress: [
+    { vi: "Người chiến binh tĩnh lặng giữa tâm bão, bởi bão tồn tại bên ngoài, không phải bên trong.", en: "The warrior is still amidst the storm, for the storm is outside, not within.", zh: "战士在风暴中保持静止，因为风暴在外面，而不在心里。", author: "Antigravity Zen" },
+    { vi: "Đừng cầu mong một gánh nặng nhẹ đi, hãy cầu mong một bờ vai mạnh mẽ hơn.", en: "Do not pray for an easy life, pray for the strength to endure a difficult one.", zh: "不要祈求轻松的生活，祈求有力量忍受艰难的生活。", author: "Bruce Lee" },
+    { vi: "Nơi nào có sự tĩnh lặng tuyệt đối, nơi đó có sức mạnh hủy diệt.", en: "Where there is absolute silence, there is destructive power.", zh: "绝对寂静之处，蕴含着毁灭性的力量。", author: "Sun Tzu" },
+    { vi: "Giữ tâm trí phẳng lặng như mặt hồ, để phản chiếu ánh chớp của gươm đao.", en: "Keep the mind still as a lake, to reflect the flash of the blade.", zh: "心静如水，映出剑的闪光。", author: "Miyamoto Musashi" },
+    { vi: "Sự bình tĩnh của bạn là vũ khí trí mạng nhất đối phó với sự hỗn loạn.", en: "Your calm is the most lethal weapon against chaos.", zh: "你的冷静是对抗混乱最致命的武器。", author: "Stoic Core" }
+  ],
+  burnout: [
+    { vi: "Người chiến binh thực thụ là người biết rũ bỏ mệt mỏi trong một cái chớp mắt.", en: "The true warrior sheds exhaustion in a single blink.", zh: "真正的战士在眨眼间褪去疲惫。", author: "Antigravity Zen" },
+    { vi: "Đáy của sự cạn kiệt chính là điểm khởi đầu của nguồn sức mạnh mới.", en: "The bottom of exhaustion is the genesis of new power.", zh: "筋疲力尽的谷底，正是新力量的起点。", author: "Phoenix Code" },
+    { vi: "Bạn không thể gục ngã, nếu bạn không cho phép tâm trí mình bỏ cuộc.", en: "You cannot fall, if you do not allow your mind to surrender.", zh: "如果你不让你的内心屈服，你就不会倒下。", author: "Stoic Core" },
+    { vi: "Trở ngại trên đường đi, chính là con đường.", en: "The obstacle in the path becomes the path.", zh: "路上的障碍，本身就是路。", author: "Marcus Aurelius" },
+    { vi: "Nghỉ ngơi không phải là lùi bước, mà là mài lại thanh gươm đang mẻ.", en: "Resting is not retreating, but sharpening the chipped blade.", zh: "休息不是退缩，而是磨砺崩口的刀刃。", author: "Zen M." }
+  ],
+  sleepy: [
+    { vi: "Thức tỉnh đi. Trận chiến không chờ đợi đôi mắt nhắm nghiền.", en: "Awaken. The battle does not wait for closed eyes.", zh: "醒来吧。战斗不会等待紧闭的双眼。", author: "Antigravity Zen" },
+    { vi: "Một tia lửa nhỏ cũng có thể thiêu rụi cả cánh rừng của sự trì trệ.", en: "A single spark can burn down the forest of lethargy.", zh: "星星之火可以烧毁迟钝的森林。", author: "Dojo Master" },
+    { vi: "Con thú săn mồi không ngáp trước khi nhảy, nó nhe nanh.", en: "The predator does not yawn before pouncing, it bares its fangs.", zh: "猛兽在扑向猎物之前不会打哈欠，它只会露出獠牙。", author: "Predator Mindset" },
+    { vi: "Gió gầm thét vĩ đại nhất khi cơn bão vừa bắt đầu. Hãy là cơn bão.", en: "The wind howls greatest when the storm begins. Be the storm.", zh: "风暴刚开始时风怒吼得最大。要做那阵风暴。", author: "Stoic Core" },
+    { vi: "Nhìn thẳng vào thực tại. Bóp nát sự yếu đuối.", en: "Stare into reality. Crush the weakness.", zh: "直视现实。粉碎软弱。", author: "Warrior's Code" }
+  ],
+  focus: [
+    { vi: "Mũi tên chỉ trúng đích khi thế giới xung quanh biến mất hoàn toàn.", en: "The arrow hits the mark only when the surroundings completely vanish.", zh: "只有当周围世界完全消失时，箭才能命中目标。", author: "Archer's Zen" },
+    { vi: "Tia laser cắt đứt kim loại không nhờ bạo lực, mà nhờ tập trung tuyệt đối.", en: "A laser cuts metal not out of force, but absolute focus.", zh: "激光切割金属不是靠爆发力，而是靠绝对的专注。", author: "Antigravity Zen" },
+    { vi: "Kẻ đuổi theo hai con thỏ cùng lúc sẽ luôn trắng tay.", en: "The man who chases two rabbits catches neither.", zh: "同时追逐两只兔子的人，将一无所获。", author: "Confucius" },
+    { vi: "Sự xao nhãng là cái chết của thiên tài. Sự tĩnh tại là đặc quyền của chiến binh.", en: "Distraction is the death of genius. Stillness is the edge of the warrior.", zh: "分心是天才的坟墓。静心是战士的专利。", author: "Stoic Core" },
+    { vi: "Chỉ một nhát chém. Chỉ một mục tiêu. Không hề đắn đo.", en: "One strike. One target. No hesitation.", zh: "一击。一个目标。绝不犹豫。", author: "Miyamoto Musashi" }
+  ]
+};
 
 const REWARD_CONFIGS: Record<string, any> = {
   stress: {
@@ -111,7 +134,8 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(flow.phases[0].time);
   const [isFinished, setIsFinished] = useState(false);
-  const [rewardQuote, setRewardQuote] = useState(IGNITION_QUOTES[0]);
+  const currentQuotes = MOOD_QUOTES[mood] || MOOD_QUOTES['stress'];
+  const [rewardQuote, setRewardQuote] = useState(currentQuotes[0]);
   const bgAudioRef = useRef<HTMLAudioElement | null>(null);
   const rewardAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -154,7 +178,8 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
 
     if (timeLeft <= 0) {
       if (phaseIdx >= flow.phases.length - 1) {
-         setRewardQuote(IGNITION_QUOTES[Math.floor(Math.random() * IGNITION_QUOTES.length)]);
+         const quotes = MOOD_QUOTES[mood] || MOOD_QUOTES['stress'];
+         setRewardQuote(quotes[Math.floor(Math.random() * quotes.length)]);
          setIsFinished(true);
       } else {
          const nextPhaseIdx = phaseIdx + 1;
