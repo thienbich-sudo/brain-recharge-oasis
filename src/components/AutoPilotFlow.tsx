@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../i18n/LangContext';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { XCircle, Trophy, Heart, Zap, Medal } from 'lucide-react';
 
 interface Props {
   mood: string;
@@ -43,14 +43,77 @@ const FLOWS: Record<string, any> = {
   }
 };
 
+const IGNITION_QUOTES = [
+  { vi: "Người chiến binh binh thực thụ là người biết rũ bỏ mệt mỏi trong một cái chớp mắt.", en: "The true warrior sheds exhaustion in a single blink.", zh: "真正的战士在眨眼间褪去疲惫。", author: "Antigravity Zen" },
+  { vi: "Trở ngại trên đường đi, chính là con đường.", en: "The obstacle in the path becomes the path.", zh: "路上的障碍，本身就是路。", author: "Marcus Aurelius" },
+  { vi: "Giữ tâm trí phẳng lặng như mặt hồ, để phản chiếu ánh chớp của gươm đao.", en: "Keep the mind still as a lake, to reflect the flash of the blade.", zh: "心静如水，映出剑的闪光。", author: "Miyamoto Musashi" },
+  { vi: "Nơi nào có sự tĩnh lặng tuyệt đối, nơi đó có sức mạnh hủy diệt.", en: "Where there is absolute silence, there is destructive power.", zh: "绝对寂静之处，蕴含着毁灭性的力量。", author: "Sun Tzu" },
+  { vi: "Bạn không thể gục ngã, nếu bạn không cho phép tâm trí mình bỏ cuộc.", en: "You cannot fall, if you do not allow your mind to surrender.", zh: "如果你不让你的内心屈服，你就不会倒下。", author: "Stoic Core" }
+];
+
+const REWARD_CONFIGS: Record<string, any> = {
+  stress: {
+    textColor: 'text-pink-400',
+    iconColor: 'text-pink-500',
+    bgClass: 'from-pink-500/30 to-rose-400/20',
+    borderClass: 'border-pink-500/50',
+    shadowClass: 'shadow-[0_0_80px_rgba(236,72,153,0.4)]',
+    iconShadow: 'drop-shadow-[0_0_20px_rgba(236,72,153,1)]',
+    Icon: Heart,
+    rewardMusic: '/audio/reward-stress.mp3',
+    badgeText: { vi: 'Trái Tim Kiên Cường', en: 'Resilient Heart', zh: '坚韧之心' },
+    titleText: { vi: 'Bạn Đã Làm Rất Tốt!', en: 'You Did Great!', zh: '你做得很好!' }
+  },
+  burnout: {
+    textColor: 'text-amber-400',
+    iconColor: 'text-amber-500',
+    bgClass: 'from-amber-400/30 to-yellow-400/20',
+    borderClass: 'border-amber-400/50',
+    shadowClass: 'shadow-[0_0_80px_rgba(251,191,36,0.4)]',
+    iconShadow: 'drop-shadow-[0_0_30px_rgba(251,191,36,1)]',
+    Icon: Trophy,
+    rewardMusic: '/audio/reward-burnout.mp3',
+    badgeText: { vi: 'Chiếc Cúp Bất Khuất', en: 'Trophy of Defiance', zh: '不屈奖杯' },
+    titleText: { vi: 'Sự Vượt Trội Bắt Đầu', en: 'Transcendence Begins', zh: '超越开始' }
+  },
+  sleepy: {
+    textColor: 'text-orange-400',
+    iconColor: 'text-orange-500',
+    bgClass: 'from-orange-500/30 to-red-400/20',
+    borderClass: 'border-orange-500/50',
+    shadowClass: 'shadow-[0_0_80px_rgba(249,115,22,0.4)]',
+    iconShadow: 'drop-shadow-[0_0_20px_rgba(249,115,22,1)]',
+    Icon: Zap,
+    rewardMusic: '/audio/reward-burnout.mp3',
+    badgeText: { vi: 'Nguồn Điện Thức Tỉnh', en: 'Awakening Power', zh: '觉醒之源' },
+    titleText: { vi: 'Động Cơ Kích Hoạt', en: 'Ignition Engaged', zh: '引擎启动' }
+  },
+  focus: {
+    textColor: 'text-cyan-400',
+    iconColor: 'text-cyan-500',
+    bgClass: 'from-cyan-500/30 to-blue-500/20',
+    borderClass: 'border-cyan-500/50',
+    shadowClass: 'shadow-[0_0_80px_rgba(6,182,212,0.4)]',
+    iconShadow: 'drop-shadow-[0_0_20px_rgba(6,182,212,1)]',
+    Icon: Medal,
+    rewardMusic: '/audio/reward-focus.mp3',
+    badgeText: { vi: 'Huy Chương Chuyên Gia', en: 'Mastery Medal', zh: '大师勋章' },
+    titleText: { vi: 'Sẵn Sàng Bứt Phá', en: 'Ready to Breakout', zh: '准备突破' }
+  }
+};
+
 export default function AutoPilotFlow({ mood, onExit }: Props) {
   const { lang, l, playTTS, stopTTS } = useLanguage();
   const flow = FLOWS[mood] || FLOWS['stress'];
+  const rewardConfig = REWARD_CONFIGS[mood] || REWARD_CONFIGS['stress'];
+  const RewardIcon = rewardConfig.Icon;
   
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(flow.phases[0].time);
   const [isFinished, setIsFinished] = useState(false);
+  const [rewardQuote, setRewardQuote] = useState(IGNITION_QUOTES[0]);
   const bgAudioRef = useRef<HTMLAudioElement | null>(null);
+  const rewardAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     // Mount background music
@@ -60,9 +123,22 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
 
     return () => {
       if (bgAudioRef.current) bgAudioRef.current.pause();
+      if (rewardAudioRef.current) rewardAudioRef.current.pause();
       stopTTS();
     };
   }, []);
+
+  // Play reward music when finished
+  useEffect(() => {
+    if (isFinished) {
+      if (bgAudioRef.current) bgAudioRef.current.pause();
+      stopTTS();
+      
+      rewardAudioRef.current = new Audio(rewardConfig.rewardMusic);
+      rewardAudioRef.current.volume = 0.6;
+      rewardAudioRef.current.play().catch(e => console.error("Reward Music failed:", e));
+    }
+  }, [isFinished, rewardConfig.rewardMusic]);
 
   // React to Phase Changes OR Language Selection (Instantly re-read current instruction)
   useEffect(() => {
@@ -76,29 +152,30 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
   useEffect(() => {
     if (isFinished) return;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev: number) => {
-        if (prev <= 1) {
-           if (phaseIdx >= flow.phases.length - 1) {
-              setIsFinished(true);
-              return 0;
-           }
-           setPhaseIdx(p => p + 1);
-           return flow.phases[phaseIdx + 1].time;
-        }
-        return prev - 1;
-      });
+    if (timeLeft <= 0) {
+      if (phaseIdx >= flow.phases.length - 1) {
+         setRewardQuote(IGNITION_QUOTES[Math.floor(Math.random() * IGNITION_QUOTES.length)]);
+         setIsFinished(true);
+      } else {
+         const nextPhaseIdx = phaseIdx + 1;
+         setPhaseIdx(nextPhaseIdx);
+         setTimeLeft(flow.phases[nextPhaseIdx].time);
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTimeLeft((prev: number) => prev - 1);
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [phaseIdx, isFinished]);
+    return () => clearTimeout(timer);
+  }, [timeLeft, phaseIdx, isFinished, flow]);
 
   return (
     <div className="flex flex-col items-center justify-center p-6 w-full h-full relative overflow-hidden bg-black/40 backdrop-blur-3xl rounded-3xl border border-white/5">
       <button onClick={onExit} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors z-50">
         <XCircle size={28} />
       </button>
-
       <AnimatePresence mode="wait">
         {!isFinished ? (
           <motion.div 
@@ -177,17 +254,73 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
              </div>
           </motion.div>
         ) : (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col items-center text-center z-10"
-          >
-             <CheckCircle2 size={64} className="text-emerald-400 mb-6" />
-             <h2 className="text-3xl font-display text-white mb-2">{l({vi: 'Quy Trình Hoàn Tất', en: 'Process Complete', zh: '流程完成'})}</h2>
-             <p className="text-white/50 mb-8">{l({vi: 'Hệ thống của bạn đã được khởi động lại thành công.', en: 'Your system has successfully restarted.', zh: '您的系统已成功重启。'})}</p>
-             <button onClick={onExit} className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold tracking-wider text-sm transition-all border border-white/20">
-               {l({vi: 'TRỞ VỀ ỐC ĐẢO CỐT LÕI', en: 'RETURN TO CORE OASIS', zh: '返回核心绿洲'})}
-             </button>
-          </motion.div>
+           <motion.div 
+             key="reward"
+             initial={{ opacity: 0, scale: 0.8, y: 50 }} 
+             animate={{ opacity: 1, scale: 1, y: 0 }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+             className="flex flex-col items-center justify-center text-center w-full h-full absolute inset-0 z-50 bg-black/60 backdrop-blur-3xl rounded-3xl"
+           >
+              {/* Grand Reward Badge */}
+              <motion.div 
+                initial={{ rotate: -180, scale: 0 }}
+                animate={{ rotate: 0, scale: [1.2, 1, 1.05, 1] }}
+                transition={{ type: "spring", bounce: 0.6, duration: 1.5, delay: 0.2 }}
+                className={`w-40 h-40 md:w-56 md:h-56 mb-8 rounded-full bg-gradient-to-tr ${rewardConfig.bgClass} border-4 ${rewardConfig.borderClass} flex items-center justify-center ${rewardConfig.shadowClass}`}
+              >
+                 <motion.div 
+                    animate={{ scale: [1, 1.1, 1] }} 
+                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                    className={rewardConfig.iconColor}
+                 >
+                   <RewardIcon size={80} className={`md:w-32 md:h-32 ${rewardConfig.iconShadow}`} strokeWidth={1.5} />
+                 </motion.div>
+              </motion.div>
+
+              <motion.h2 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.6 }}
+                 className={`text-lg md:text-2xl font-sans tracking-[0.4em] font-black ${rewardConfig.textColor} mb-4 uppercase drop-shadow-[0_0_15px_currentColor]`}
+              >
+                 {l(rewardConfig.badgeText)}
+              </motion.h2>
+              <motion.h1 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.8 }}
+                 className="text-3xl md:text-5xl font-display text-white mb-12 uppercase tracking-widest font-bold drop-shadow-[0_5px_15px_rgba(0,0,0,0.8)]"
+              >
+                {l(rewardConfig.titleText)}
+              </motion.h1>
+
+             {/* Stoic Quote Area */}
+             <motion.div 
+                 initial={{ opacity: 0 }}
+                 animate={{ opacity: 1 }}
+                 transition={{ delay: 1 }}
+                 className="relative py-6 px-10 mb-12 w-11/12 max-w-2xl overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-sm"
+             >
+                 <h1 className="text-xl md:text-2xl font-display font-light text-white italic leading-relaxed mb-4 relative z-10 drop-shadow-md">
+                   "{l(rewardQuote)}"
+                 </h1>
+                 <p className="text-xs font-sans tracking-[0.2em] font-bold text-white/50 uppercase relative z-10">
+                   — {rewardQuote.author} —
+                 </p>
+             </motion.div>
+
+             <motion.button 
+               initial={{ opacity: 0, y: 20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 1.5 }}
+               whileHover={{ scale: 1.05, backgroundColor: "rgba(255,255,255,0.2)" }}
+               whileTap={{ scale: 0.95 }}
+               onClick={onExit} 
+               className="px-10 py-5 bg-white/10 text-white rounded-full font-bold tracking-[0.2em] md:tracking-[0.3em] text-xs md:text-sm transition-all border border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.05)] hover:shadow-[0_0_50px_rgba(255,255,255,0.2)] whitespace-nowrap"
+             >
+               {l({vi: 'NHẬN THƯỞNG & VỀ ỐC ĐẢO', en: 'CLAIM & RETURN TO OASIS', zh: '领取并返回绿洲'})}
+             </motion.button>
+           </motion.div>
         )}
       </AnimatePresence>
     </div>

@@ -6,13 +6,18 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    port: 5176,
+    strictPort: true,
+    open: true // Tự động mở một tab trình duyệt mới hoàn toàn sạch sẽ
+  },
   plugins: [
     tailwindcss(),
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       devOptions: {
-        enabled: true // Allows PWA testing during dev mode
+        enabled: false // Tạm tắt để dev không bị lưu cache cũ liên tục
       },
       manifest: {
         name: 'Brain Recharge Oasis',
