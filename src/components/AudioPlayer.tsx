@@ -8,9 +8,9 @@ const playlist = [
   { id: 't2', title: 'NASA Deep Space One', desc: { vi: 'Tách biệt trần gian (Deep Focus)', en: 'Zero Distraction Focus', zh: '零分心专注' }, url: 'https://ice1.somafm.com/deepspaceone-128-mp3', color: '#c084fc' },
   { id: 't3', title: 'DEF CON Radio', desc: { vi: 'Hack & Code Focus', en: 'Cyberpunk Focus', zh: '深度代码专注' }, url: 'https://ice1.somafm.com/defcon-128-mp3', color: '#14b8a6' },
   { id: 't4', title: 'Drone Zone', desc: { vi: 'Siêu Thư Giãn (Sleep)', en: 'Atmospheric Ambient', zh: '极度放松氛围' }, url: 'https://ice1.somafm.com/dronezone-128-mp3', color: '#f472b6' },
-  { id: 't5', title: 'C. Debussy - Clair de Lune', desc: { vi: 'Trạng thái tuôn trào (Piano)', en: 'Abstract Flow State', zh: '抽象心流状态' }, url: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Claude_Debussy_-_Clair_de_lune.ogg', color: '#60a5fa' },
-  { id: 't6', title: 'J.S. Bach - Goldberg Aria', desc: { vi: 'Thiền định & Logic', en: 'Meditation & Logic', zh: '静心与逻辑' }, url: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Bach_-_Goldberg_Variations%2C_BWV_988_-_01_-_Aria.ogg', color: '#facc15' },
-  { id: 't7', title: 'W.A. Mozart - Symphony 40', desc: { vi: 'Đồng bộ hai bán cầu não', en: 'Brain Sync & Clarity', zh: '左右脑同步' }, url: 'https://upload.wikimedia.org/wikipedia/commons/8/85/Mozart_-_Symphony_No_40_-_1st_Movement.ogg', color: '#fb923c' },
+  { id: 't5', title: 'L.V. Beethoven - Moonlight Sonata', desc: { vi: 'Trạng thái tuôn trào (Piano)', en: 'Abstract Flow State', zh: '抽象心流状态' }, url: 'https://www.mfiles.co.uk/mp3-downloads/beethoven-moonlight-sonata-1st-movement.mp3', color: '#60a5fa' },
+  { id: 't6', title: 'J.S. Bach - Prelude No. 1', desc: { vi: 'Thiền định & Logic', en: 'Meditation & Logic', zh: '静心与逻辑' }, url: 'https://www.mfiles.co.uk/mp3-downloads/bach-prelude1.mp3', color: '#facc15' },
+  { id: 't7', title: 'F. Chopin - Nocturne Op.9', desc: { vi: 'Đồng bộ hai bán cầu não', en: 'Brain Sync & Clarity', zh: '左右脑同步' }, url: 'https://www.mfiles.co.uk/mp3-downloads/chopin-nocturne-op9-no2.mp3', color: '#fb923c' },
 ];
 
 export default function AudioPlayer() {
