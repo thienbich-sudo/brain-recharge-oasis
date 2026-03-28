@@ -124,43 +124,51 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 />
                 
-                {/* Breathing Energy Petals (True Lotus Form) */}
-                {[...Array(6)].map((_, i) => {
-                   const rotation = i * 60;
-                   return (
-                     <motion.div
-                        key={i}
-                        className="absolute inset-0 m-auto w-12 h-32 rounded-full bg-gradient-to-t from-emerald-500/40 to-teal-300/10 mix-blend-screen blur-[2px] border border-emerald-400/30"
-                        style={{ originY: 1 }}
-                        initial={{ rotate: rotation, y: -32 }}
-                        animate={{
-                           scaleY: [1, 1.5, 1],
-                           scaleX: [1, 1.2, 1],
-                           opacity: [0.3, 0.8, 0.3],
-                           rotate: [rotation, rotation + 15, rotation]
-                        }}
-                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 }}
-                     />
-                   );
-                })}
-                
-                {/* Inner Beating Heart */}
+                {/* Breathing Energy Petals (True Mathematical Flower of Life) */}
                 <motion.div 
-                  className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-emerald-400/30 blur-2xl"
-                  animate={{ scale: [1, 1.8, 1], opacity: [0.4, 0.9, 0.4] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                   className="absolute inset-0 m-auto w-32 h-32"
+                   animate={{ rotate: 360 }}
+                   transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                >
+                   {[...Array(6)].map((_, i) => {
+                      const angle = (i * 60 * Math.PI) / 180;
+                      const r = 30; // Radius shift of petals
+                      const tx = Math.cos(angle) * r;
+                      const ty = Math.sin(angle) * r;
+                      
+                      return (
+                        <motion.div
+                           key={i}
+                           className="absolute inset-0 m-auto w-24 h-24 rounded-full border-[1.5px] border-emerald-400/40 bg-gradient-to-tr from-emerald-500/10 to-teal-200/5 mix-blend-screen shadow-[inset_0_0_15px_rgba(52,211,153,0.2)]"
+                           initial={{ x: tx, y: ty }}
+                           animate={{
+                              x: [tx, tx * 1.6, tx],
+                              y: [ty, ty * 1.6, ty],
+                              scale: [1, 1.1, 1],
+                              opacity: [0.5, 0.9, 0.5]
+                           }}
+                           transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                      );
+                   })}
+                </motion.div>
+                
+                {/* Inner Glowing Core */}
+                <motion.div 
+                  className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-emerald-400/20 blur-xl"
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.4, 1, 0.4] }}
+                  transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
                 />
                 
                 {/* Crisp Center Diamond */}
                 <motion.div 
-                  className="absolute inset-0 m-auto w-5 h-5 bg-emerald-300 shadow-[0_0_30px_rgba(52,211,153,1)] z-20 rounded-sm"
-                  initial={{ rotate: 45 }}
+                  className="absolute inset-0 m-auto w-4 h-4 rounded-sm bg-white shadow-[0_0_20px_#34d399,0_0_40px_#10b981] z-20"
+                  style={{ rotate: 45 }}
                   animate={{ 
-                    scale: [1, 1.3, 1], 
-                    opacity: [0.8, 1, 0.8], 
-                    rotate: [45, 135, 45] 
+                    scale: [1, 1.4, 1], 
+                    opacity: [0.7, 1, 0.7],
                   }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }}
                 />
              </div>
           </motion.div>
