@@ -114,44 +114,52 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
              <div className="mt-16 w-64 h-64 relative flex items-center justify-center shrink-0">
                 {/* Outer Ring */}
                 <motion.div 
-                   className="absolute inset-0 rounded-full border border-emerald-500/20"
+                   className="absolute inset-0 m-auto w-full h-full rounded-full border border-emerald-500/20"
                    animate={{ scale: [1, 1.4, 1], rotate: [0, 90, 0] }}
                    transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                 />
                 <motion.div 
-                   className="absolute inset-4 rounded-full border border-teal-500/10"
+                   className="absolute inset-0 m-auto w-56 h-56 rounded-full border border-teal-500/10"
                    animate={{ scale: [1, 1.2, 1], rotate: [0, -90, 0] }}
                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 />
                 
-                {/* Breathing Energy Petals */}
-                {[...Array(6)].map((_, i) => (
-                   <motion.div
-                      key={i}
-                      className="absolute w-24 h-24 rounded-full bg-gradient-to-tr from-emerald-500/20 to-teal-400/10 mix-blend-screen blur-md border border-emerald-500/10"
-                      style={{
-                         rotate: i * 60,
-                         transformOrigin: '50% 50%',
-                      }}
-                      animate={{
-                         scale: [1, 1.5, 1],
-                         opacity: [0.3, 0.7, 0.3],
-                         rotate: [i * 60, i * 60 + 45, i * 60]
-                      }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.2 }}
-                   />
-                ))}
+                {/* Breathing Energy Petals (True Lotus Form) */}
+                {[...Array(6)].map((_, i) => {
+                   const rotation = i * 60;
+                   return (
+                     <motion.div
+                        key={i}
+                        className="absolute inset-0 m-auto w-12 h-32 rounded-full bg-gradient-to-t from-emerald-500/40 to-teal-300/10 mix-blend-screen blur-[2px] border border-emerald-400/30"
+                        style={{ originY: 1 }}
+                        initial={{ rotate: rotation, y: -32 }}
+                        animate={{
+                           scaleY: [1, 1.5, 1],
+                           scaleX: [1, 1.2, 1],
+                           opacity: [0.3, 0.8, 0.3],
+                           rotate: [rotation, rotation + 15, rotation]
+                        }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.1 }}
+                     />
+                   );
+                })}
                 
                 {/* Inner Beating Heart */}
                 <motion.div 
-                  className="w-16 h-16 rounded-full bg-emerald-400/30 blur-2xl"
-                  animate={{ scale: [1, 2, 1], opacity: [0.4, 0.9, 0.4] }}
+                  className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-emerald-400/30 blur-2xl"
+                  animate={{ scale: [1, 1.8, 1], opacity: [0.4, 0.9, 0.4] }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 />
-                {/* Crisp Center Dot */}
+                
+                {/* Crisp Center Diamond */}
                 <motion.div 
-                  className="w-4 h-4 rounded-full bg-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.8)] z-10"
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
+                  className="absolute inset-0 m-auto w-5 h-5 bg-emerald-300 shadow-[0_0_30px_rgba(52,211,153,1)] z-20 rounded-sm"
+                  initial={{ rotate: 45 }}
+                  animate={{ 
+                    scale: [1, 1.3, 1], 
+                    opacity: [0.8, 1, 0.8], 
+                    rotate: [45, 135, 45] 
+                  }}
                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 />
              </div>
