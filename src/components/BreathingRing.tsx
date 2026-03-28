@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Activity, PersonStanding, Flame, Ear, EarOff } from 'lucide-react';
+import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause } from 'lucide-react';
 import ZenAvatar from './ZenAvatar';
 import { useLanguage } from '../i18n/LangContext';
 
@@ -12,6 +12,8 @@ export default function BreathingRing() {
   const [stepIdx, setStepIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(5);
   const [isVoiceOn, setIsVoiceOn] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const currentAudio = useRef<HTMLAudioElement | null>(null);
 
   // Localization Dictionary Helper
   const l = (obj: { vi: string, en: string, zh: string }) => obj[lang] || obj.vi;
@@ -169,6 +171,7 @@ export default function BreathingRing() {
   }, [mode]);
 
   useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
       setTimeLeft(prev => {
          if (prev <= 1) {
@@ -179,28 +182,45 @@ export default function BreathingRing() {
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [mode]);
+  }, [mode, isPaused]);
 
   const speak = (textObj: any) => {
-     if (!isVoiceOn) return;
+     if (currentAudio.current) {
+        currentAudio.current.pause();
+        currentAudio.current.currentTime = 0;
+     }
+     if (!isVoiceOn || isPaused) return;
      const textToSpeak = l(textObj);
      const voiceModel = lang === 'vi' ? 'vi-VN-HoaiMyNeural' : lang === 'zh' ? 'zh-CN-XiaoxiaoNeural' : 'en-US-AriaNeural';
      const audioUrl = `https://ocean-books.vercel.app/api/tts?text=${encodeURIComponent(textToSpeak)}&voice=${voiceModel}`;
-     const audio = new Audio(audioUrl);
-     audio.volume = 0.8;
-     audio.play().catch(e => console.error("Neural TTS failed:", e));
+     currentAudio.current = new Audio(audioUrl);
+     currentAudio.current.volume = 0.8;
+     currentAudio.current.play().catch(e => console.error("Neural TTS failed:", e));
   };
 
   useEffect(() => {
     if (timeLeft === -1) {
         setTimeLeft(modes[mode].steps[stepIdx].time);
-        speak(modes[mode].steps[stepIdx].text);
+        if (!isPaused) speak(modes[mode].steps[stepIdx].text);
     }
-  }, [stepIdx, timeLeft, mode, lang, isVoiceOn]);
+  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused]);
 
   useEffect(() => {
-     speak(modes[mode].steps[0].text);
+     if (!isPaused) speak(modes[mode].steps[0].text);
   }, [mode, lang, isVoiceOn]);
+
+  // Audio Cleanup and Pause handling
+  useEffect(() => {
+      return () => {
+         if (currentAudio.current) currentAudio.current.pause();
+      };
+  }, []);
+
+  useEffect(() => {
+     if ((isPaused || !isVoiceOn) && currentAudio.current) {
+        currentAudio.current.pause();
+     }
+  }, [isPaused, isVoiceOn]);
 
   const safeIdx = Math.min(stepIdx, modes[mode].steps.length - 1);
   const currentStep = modes[mode].steps[safeIdx];
@@ -235,8 +255,18 @@ export default function BreathingRing() {
   return (
     <div className="flex flex-col items-center justify-between p-2 md:p-6 w-full max-w-2xl h-full relative">
       
-      {/* Voice Toggle tied to Global Lang */}
+      {/* Controls Toggle */}
       <div className="absolute top-2 right-2 flex flex-col gap-2 z-50">
+        <button 
+          onClick={() => setIsPaused(!isPaused)}
+          className={`flex items-center gap-2 px-3 py-1.5 md:py-2 rounded-full transition-all border shadow-lg
+            ${isPaused ? 'bg-orange-500/20 border-orange-500/50 text-orange-200' : 'bg-white/10 border-white/30 text-white hover:bg-white/20'}`}
+        >
+          {isPaused ? <Play size={14} /> : <Pause size={14} />}
+          <span className="text-[10px] md:text-xs font-sans tracking-wide uppercase font-bold">
+            {isPaused ? {vi: 'TIẾP TỤC', en: 'RESUME', zh: '继续'}[lang] : {vi: 'TẠM DỪNG', en: 'PAUSE', zh: '暂停'}[lang]}
+          </span>
+        </button>
         <button 
           onClick={() => setIsVoiceOn(!isVoiceOn)}
           className={`flex items-center gap-2 px-3 py-1.5 md:py-2 rounded-full transition-all border shadow-lg
