@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause } from 'lucide-react';
 import ZenAvatar from './ZenAvatar';
 import { useLanguage } from '../i18n/LangContext';
 
 export default function BreathingRing() {
-  const { lang } = useLanguage();
+  const { lang, l, playTTS, stopTTS } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<'breath' | 'upper' | 'full'>('upper');
   const [mode, setMode] = useState<string>('neck');
   
@@ -13,10 +13,6 @@ export default function BreathingRing() {
   const [timeLeft, setTimeLeft] = useState(5);
   const [isVoiceOn, setIsVoiceOn] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
-  const currentAudio = useRef<HTMLAudioElement | null>(null);
-
-  // Localization Dictionary Helper
-  const l = (obj: { vi: string, en: string, zh: string }) => obj[lang] || obj.vi;
 
   const modes: Record<string, any> = {
     // 1. BREATHWORK
@@ -185,17 +181,8 @@ export default function BreathingRing() {
   }, [mode, isPaused]);
 
   const speak = (textObj: any) => {
-     if (currentAudio.current) {
-        currentAudio.current.pause();
-        currentAudio.current.currentTime = 0;
-     }
-     if (!isVoiceOn || isPaused) return;
-     const textToSpeak = l(textObj);
-     const voiceModel = lang === 'vi' ? 'vi-VN-HoaiMyNeural' : lang === 'zh' ? 'zh-CN-XiaoxiaoNeural' : 'en-US-AriaNeural';
-     const audioUrl = `https://ocean-books.vercel.app/api/tts?text=${encodeURIComponent(textToSpeak)}&voice=${voiceModel}`;
-     currentAudio.current = new Audio(audioUrl);
-     currentAudio.current.volume = 0.8;
-     currentAudio.current.play().catch(e => console.error("Neural TTS failed:", e));
+     if (!isVoiceOn || isPaused) return stopTTS();
+     playTTS(textObj);
   };
 
   useEffect(() => {
@@ -209,16 +196,15 @@ export default function BreathingRing() {
      if (!isPaused) speak(modes[mode].steps[0].text);
   }, [mode, lang, isVoiceOn]);
 
-  // Audio Cleanup and Pause handling
+  // Global Audio Cleanup and Pause handling
   useEffect(() => {
-      return () => {
-         if (currentAudio.current) currentAudio.current.pause();
-      };
+      // Force stop when component unmounts entirely
+      return () => stopTTS();
   }, []);
 
   useEffect(() => {
-     if ((isPaused || !isVoiceOn) && currentAudio.current) {
-        currentAudio.current.pause();
+     if (isPaused || !isVoiceOn) {
+        stopTTS();
      }
   }, [isPaused, isVoiceOn]);
 

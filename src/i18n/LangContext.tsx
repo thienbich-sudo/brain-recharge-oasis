@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, type ReactNode, useEffect, useRef } from 'react';
 
 export type Lang = 'vi' | 'en' | 'zh';
 
@@ -126,16 +126,23 @@ interface LanguageContextType {
   lang: Lang;
   setLang: (lang: Lang) => void;
   t: (key: string) => string;
+  l: (obj: { vi: string, en: string, zh: string }) => string;
+  playTTS: (textObj: { vi: string, en: string, zh: string }) => void;
+  stopTTS: () => void;
 }
 
 export const LanguageContext = createContext<LanguageContextType>({
   lang: 'vi',
   setLang: () => {},
-  t: (key) => key
+  t: (key) => key,
+  l: (obj) => obj.vi,
+  playTTS: () => {},
+  stopTTS: () => {}
 });
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Lang>('vi');
+  const globalAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load from localStorage if available
   useEffect(() => {
@@ -143,19 +150,51 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     if (saved && ['vi', 'en', 'zh'].includes(saved)) {
       setLang(saved as Lang);
     }
+    
+    globalAudioRef.current = new Audio();
+    return () => {
+       if (globalAudioRef.current) {
+          globalAudioRef.current.pause();
+          globalAudioRef.current = null;
+       }
+    }
   }, []);
 
-  const changeLang = (l: Lang) => {
-    setLang(l);
-    localStorage.setItem('oasis_lang', l);
+  const changeLang = (lMode: Lang) => {
+    setLang(lMode);
+    localStorage.setItem('oasis_lang', lMode);
   };
 
   const t = (key: string): string => {
     return (translations as any)[lang][key] || key;
   };
 
+  const l = (obj: { vi: string, en: string, zh: string }) => obj[lang] || obj.vi;
+
+  const stopTTS = () => {
+     if (globalAudioRef.current) {
+        globalAudioRef.current.pause();
+        globalAudioRef.current.currentTime = 0;
+     }
+  };
+
+  const playTTS = (textObj: { vi: string, en: string, zh: string }) => {
+     stopTTS();
+     const textToSpeak = l(textObj);
+     const voiceModel = lang === 'vi' ? 'vi-VN-HoaiMyNeural' : lang === 'zh' ? 'zh-CN-XiaoxiaoNeural' : 'en-US-AriaNeural';
+     const audioUrl = `https://ocean-books.vercel.app/api/tts?text=${encodeURIComponent(textToSpeak)}&voice=${voiceModel}`;
+     
+     if (globalAudioRef.current) {
+         globalAudioRef.current.src = audioUrl;
+         globalAudioRef.current.volume = 0.8;
+         globalAudioRef.current.play().catch(e => {
+            if (e.name !== 'AbortError') console.error("Neural TTS failed:", e);
+         });
+     }
+  };
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang: changeLang, t }}>
+    <LanguageContext.Provider value={{ lang, setLang: changeLang, t, l, playTTS, stopTTS }}>
       {children}
     </LanguageContext.Provider>
   );
