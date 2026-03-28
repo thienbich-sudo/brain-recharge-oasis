@@ -12,39 +12,39 @@ const FLOWS: Record<string, any> = {
   stress: {
     music: '/audio/chopin.mp3', // Chopin Nocturne
     phases: [
-      { time: 10, title: 'PHASE 1: Khởi động', vi: 'Hệ thống chẩn đoán: Căng thẳng thần kinh cao. Bắt đầu ép xung làm mát...', audio: true },
-      { time: 60, title: 'PHASE 2: Hạ nhịp tim (4-7-8)', vi: 'Hít sâu 4 giây. Giữ 7 giây. Thở ra 8 giây. Cảm nhận nhịp đập chậm lại.', audio: true },
-      { time: 20, title: 'PHASE 3: Hoàn tất', vi: 'Trạng thái cân bằng được trung hòa. Mọi muộn phiền đã tan biến.', audio: true }
+      { time: 10, title: { vi: 'GĐ 1: Khởi động', en: 'PHASE 1: Booting', zh: '阶段 1: 启动' }, text: { vi: 'Hệ thống chẩn đoán: Căng thẳng thần kinh cao. Bắt đầu ép xung làm mát...', en: 'System diagnostic: High nervous tension. Initiating cooling protocol...', zh: '系统诊断：精神高度紧张。启动冷却协议...' }, audio: true },
+      { time: 60, title: { vi: 'GĐ 2: Hạ nhịp (4-7-8)', en: 'PHASE 2: Slow Down (4-7-8)', zh: '阶段 2: 降速 (4-7-8)' }, text: { vi: 'Hít sâu 4 giây. Giữ 7 giây. Thở ra 8 giây. Cảm nhận nhịp đập chậm lại.', en: 'Inhale 4 seconds. Hold 7 seconds. Exhale 8 seconds. Feel the heartbeat slowing.', zh: '吸气4秒。屏住7秒。呼气8秒。感受心跳变慢。' }, audio: true },
+      { time: 20, title: { vi: 'GĐ 3: Hoàn tất', en: 'PHASE 3: Complete', zh: '阶段 3: 完成' }, text: { vi: 'Trạng thái cân bằng được trung hòa. Mọi muộn phiền đã tan biến.', en: 'Equilibrium neutralized. All burdens have dissipated.', zh: '平衡已被中和。一切烦恼烟消云散。' }, audio: true }
     ]
   },
   focus: {
     music: '/audio/bach.mp3', // Bach Prelude
     phases: [
-      { time: 10, title: 'PHASE 1: Quét nhiễu loạn', vi: 'Phát hiện xao nhãng. Khởi động Giao thức Tập trung tuyệt đối.', audio: true },
-      { time: 40, title: 'PHASE 2: Khoá Mục Tiêu', vi: 'Nhìn chằm chằm vào chấm tròn. Loại bỏ mọi suy nghĩ ngoài lề.', audio: true },
-      { time: 10, title: 'PHASE 3: Sẵn sàng', vi: 'Hệ thống phòng thủ đã bật. Work hard!', audio: true }
+      { time: 10, title: { vi: 'GĐ 1: Quét nhiễu loạn', en: 'PHASE 1: Scan anomalies', zh: '阶段 1: 扫描异常' }, text: { vi: 'Phát hiện xao nhãng. Khởi động Giao thức Tập trung tuyệt đối.', en: 'Distractions detected. Booting Absolute Focus Protocol.', zh: '检测到分心。启动绝对专注协议。' }, audio: true },
+      { time: 40, title: { vi: 'GĐ 2: Khoá Mục Tiêu', en: 'PHASE 2: Target Lock', zh: '阶段 2: 目标锁定' }, text: { vi: 'Nhìn chằm chằm vào chấm kim cương. Loại bỏ mọi suy nghĩ ngoài lề.', en: 'Stare directly at the diamond core. Eliminate all lateral thoughts.', zh: '死死盯住钻石核心。消除一切杂念。' }, audio: true },
+      { time: 10, title: { vi: 'GĐ 3: Sẵn sàng', en: 'PHASE 3: Ready', zh: '阶段 3: 准备就绪' }, text: { vi: 'Hệ thống phòng thủ đã bật. Bắt đầu làm việc!', en: 'Defense systems ONLINE. Commence work!', zh: '防御系统已开启。开始工作！' }, audio: true }
     ]
   },
   burnout: {
     music: '/audio/moonlight.mp3', // Beethoven Moonlight
     phases: [
-      { time: 10, title: 'PHASE 1: Đóng băng', vi: 'Cảnh báo cạn kiệt Năng lượng. Kích hoạt buồng ngủ đông Tâm trí.', audio: true },
-      { time: 60, title: 'PHASE 2: Hư Không', vi: 'Không cần cố gắng nữa. Thả rũ toàn bộ cơ bắp. Bạn an toàn.', audio: true },
-      { time: 20, title: 'PHASE 3: Tái tạo', vi: 'Dòng điện đã nạp lại. Hãy trở lại khi bạn thực sự sẵn sàng.', audio: true }
+      { time: 10, title: { vi: 'GĐ 1: Đóng băng', en: 'PHASE 1: Freeze', zh: '阶段 1: 冻结' }, text: { vi: 'Cảnh báo cạn kiệt Năng lượng. Kích hoạt buồng ngủ đông Tâm trí.', en: 'Critical Energy Warning. Activating Deep Cognitive Cryosleep.', zh: '能量耗尽警告。激活深度认知冬眠舱。' }, audio: true },
+      { time: 60, title: { vi: 'GĐ 2: Hư Không', en: 'PHASE 2: The Void', zh: '阶段 2: 虚空' }, text: { vi: 'Không cần cố gắng nữa. Thả rũ toàn bộ cơ bắp. Bạn an toàn.', en: 'Cease all effort. Release all muscular tension. You are safe here.', zh: '不要再勉强了。全身肌肉放松。你在这里很安全。' }, audio: true },
+      { time: 20, title: { vi: 'GĐ 3: Tái tạo', en: 'PHASE 3: Regeneration', zh: '阶段 3: 再生' }, text: { vi: 'Dòng điện đã nạp lại. Hãy trở lại khi bạn thực sự sẵn sàng.', en: 'Current restored. Return only when you are truly ready.', zh: '电流已充满。请在你真正准备好时再回来。' }, audio: true }
     ]
   },
   sleepy: {
     music: 'https://ice1.somafm.com/defcon-128-mp3', // DEF CON
     phases: [
-      { time: 10, title: 'PHASE 1: Kích điện', vi: 'Hệ thống báo ù lỳ. Bơm Adrenaline chu trình 1...', audio: true },
-      { time: 30, title: 'PHASE 2: Lửa Đánh Thức', vi: 'Thở gấp và dứt khoát qua mũi! Kích thích bơm máu lên màng não!', audio: true },
-      { time: 10, title: 'PHASE 3: Đánh lửa', vi: '100% Cảnh giác. Bắt đầu chiến đấu.', audio: true }
+      { time: 10, title: { vi: 'GĐ 1: Kích điện', en: 'PHASE 1: Shock', zh: '阶段 1: 电击' }, text: { vi: 'Hệ thống báo ù lỳ. Bơm Adrenaline chu trình 1...', en: 'Lethargy detected. Pumping Adrenaline Cycle 1...', zh: '系统检测到迟钝。正在泵入肾上腺素循环 1...' }, audio: true },
+      { time: 30, title: { vi: 'GĐ 2: Lửa Đánh Thức', en: 'PHASE 2: Awakening Fire', zh: '阶段 2: 觉醒之火' }, text: { vi: 'Thở gấp và dứt khoát qua mũi! Kích thích bơm máu lên màng não!', en: 'Breathe sharp and fast through the nose! Stimulate blood flow to the cortex!', zh: '通过鼻子急促而坚定地呼吸！刺激血液泵入脑膜！' }, audio: true },
+      { time: 10, title: { vi: 'GĐ 3: Đánh lửa', en: 'PHASE 3: Ignition', zh: '阶段 3: 点火' }, text: { vi: '100% Cảnh giác. Chuẩn bị chiến đấu.', en: '100% Alert. Prepare for combat!', zh: '100% 警惕。准备战斗！' }, audio: true }
     ]
   }
 };
 
 export default function AutoPilotFlow({ mood, onExit }: Props) {
-  const { playTTS, stopTTS } = useLanguage();
+  const { lang, l, playTTS, stopTTS } = useLanguage();
   const flow = FLOWS[mood] || FLOWS['stress'];
   
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -64,13 +64,17 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
     };
   }, []);
 
+  // React to Phase Changes OR Language Selection (Instantly re-read current instruction)
   useEffect(() => {
     if (isFinished) return;
-
-    // Speak initial instruction
-    if (timeLeft === flow.phases[phaseIdx].time && flow.phases[phaseIdx].audio) {
-       playTTS({ vi: flow.phases[phaseIdx].vi, en: flow.phases[phaseIdx].vi, zh: flow.phases[phaseIdx].vi }); // using vi for now since we only hardcoded vi text to save tokens
+    if (flow.phases[phaseIdx].audio) {
+       stopTTS(); // Interrupt any ongoing TTS
+       playTTS(flow.phases[phaseIdx].text); // Speak natively in selected language
     }
+  }, [phaseIdx, lang, isFinished]);
+
+  useEffect(() => {
+    if (isFinished) return;
 
     const timer = setInterval(() => {
       setTimeLeft((prev: number) => {
@@ -102,9 +106,9 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
             initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.1 }}
             className="flex flex-col items-center text-center max-w-lg z-10"
           >
-             <h3 className="text-emerald-400 font-sans tracking-[0.2em] text-xs font-bold mb-4 uppercase">{flow.phases[phaseIdx].title}</h3>
+             <h3 className="text-emerald-400 font-sans tracking-[0.2em] text-xs font-bold mb-4 uppercase">{l(flow.phases[phaseIdx].title)}</h3>
              <h2 className="text-2xl md:text-3xl font-display font-light text-white leading-relaxed">
-               {flow.phases[phaseIdx].vi}
+               {l(flow.phases[phaseIdx].text)}
              </h2>
              <div className="mt-12 text-6xl font-display font-light text-white/20">
                00:{timeLeft.toString().padStart(2, '0')}
@@ -178,10 +182,10 @@ export default function AutoPilotFlow({ mood, onExit }: Props) {
             className="flex flex-col items-center text-center z-10"
           >
              <CheckCircle2 size={64} className="text-emerald-400 mb-6" />
-             <h2 className="text-3xl font-display text-white mb-2">Quy Trình Hoàn Tất</h2>
-             <p className="text-white/50 mb-8">Hệ thống của bạn đã được khởi động lại thành công.</p>
+             <h2 className="text-3xl font-display text-white mb-2">{l({vi: 'Quy Trình Hoàn Tất', en: 'Process Complete', zh: '流程完成'})}</h2>
+             <p className="text-white/50 mb-8">{l({vi: 'Hệ thống của bạn đã được khởi động lại thành công.', en: 'Your system has successfully restarted.', zh: '您的系统已成功重启。'})}</p>
              <button onClick={onExit} className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold tracking-wider text-sm transition-all border border-white/20">
-               TRỞ VỀ ỐC ĐẢO CỐT LÕI
+               {l({vi: 'TRỞ VỀ ỐC ĐẢO CỐT LÕI', en: 'RETURN TO CORE OASIS', zh: '返回核心绿洲'})}
              </button>
           </motion.div>
         )}
