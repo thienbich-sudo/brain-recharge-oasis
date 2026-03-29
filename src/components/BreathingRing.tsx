@@ -212,9 +212,21 @@ export default function BreathingRing() {
   useEffect(() => {
     if (timeLeft === -1 && !isCompleted) {
         setTimeLeft(modes[mode].steps[stepIdx].time);
-        if (!isPaused) speak(modes[mode].steps[stepIdx].text);
+        
+        let textObj = { ...modes[mode].steps[stepIdx].text };
+        const maxC = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
+        
+        if (stepIdx === 0 && cycleCount > 0 && cycleCount < maxC) {
+             textObj = {
+                 vi: `Chuyển vòng ${cycleCount + 1}. ` + textObj.vi,
+                 en: `Set ${cycleCount + 1}. ` + textObj.en,
+                 zh: `第 ${cycleCount + 1} 循环. ` + textObj.zh
+             };
+        }
+        
+        if (!isPaused) speak(textObj);
     }
-  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused, isCompleted]);
+  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused, isCompleted, cycleCount]);
 
   useEffect(() => {
      if (!isPaused) speak(modes[mode].steps[0].text);
@@ -261,6 +273,7 @@ export default function BreathingRing() {
   const c = colors[modes[mode].color as keyof typeof colors];
   const currentCategoryModes = Object.keys(modes).filter(k => modes[k].cat === activeCategory);
   const animProps = getAnimProps();
+  const maxCycles = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
 
   return (
     <div className="flex flex-col items-center justify-between p-4 md:p-8 w-full max-w-xl mx-auto h-full relative overflow-hidden">
@@ -307,13 +320,37 @@ export default function BreathingRing() {
         </div>
       </div>
 
-      <div className="text-center w-full z-20 shrink-0 mt-4 md:mt-8">
-        <h2 className={`text-2xl md:text-4xl font-display font-light mb-1 transition-colors duration-500 max-w-sm mx-auto ${c.text}`}>
+      <div className="text-center w-full z-20 shrink-0 mt-4 md:mt-6 mb-2">
+        <h2 className={`text-2xl md:text-4xl font-display font-light mb-2 transition-colors duration-500 max-w-sm mx-auto ${c.text}`}>
           {isCompleted ? l({vi: 'Tuyệt Vời', en: 'Excellent', zh: '太棒了'}) : phaseText}
         </h2>
-        <p className="text-[10px] md:text-xs font-sans text-white/40 uppercase tracking-widest mt-2 px-4">
-          — {isCompleted ? l({vi: `Đã hoàn thành ${cycleCount} vòng bài tập`, en: `Completed ${cycleCount} cycles`, zh: `已完成 ${cycleCount} 个循环`}) : l(modes[mode].desc)} —
-        </p>
+        
+        {/* CYCLE TRACKER */}
+        {!isCompleted ? (
+           <div className="flex flex-col items-center mt-2 gap-2">
+              <div className="flex gap-2">
+                 {[...Array(maxCycles)].map((_, i) => (
+                    <motion.div 
+                      key={i} 
+                      animate={{ 
+                         width: i === cycleCount ? 16 : 8, 
+                         height: 6,
+                         backgroundColor: i < cycleCount ? "rgba(255,255,255,0.4)" : i === cycleCount ? c.glow : "rgba(255,255,255,0.1)",
+                         boxShadow: i === cycleCount ? `0 0 10px ${c.glow}` : "none"
+                      }}
+                      className="rounded-full"
+                    />
+                 ))}
+              </div>
+              <p className="text-[10px] md:text-xs font-sans text-white/40 uppercase tracking-widest mt-1 px-4">
+                 — {l(modes[mode].desc)} —
+              </p>
+           </div>
+        ) : (
+           <p className="text-[10px] md:text-xs font-sans text-white/40 uppercase tracking-widest mt-2 px-4">
+              — {l({vi: `Đã hoàn thành ${cycleCount} vòng bài tập`, en: `Completed ${cycleCount} cycles`, zh: `已完成 ${cycleCount} 个循环`})} —
+           </p>
+        )}
       </div>
 
       {/* Hero Visualizer - The Orbital Breathing Core */}
