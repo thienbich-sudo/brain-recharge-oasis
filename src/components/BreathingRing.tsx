@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause, Trophy, RotateCcw } from 'lucide-react';
+import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause, Trophy, RotateCcw, SkipBack, SkipForward } from 'lucide-react';
 import ZenAvatar from './ZenAvatar';
 import { useLanguage } from '../i18n/LangContext';
 
@@ -15,6 +15,7 @@ export default function BreathingRing() {
   const [isPaused, setIsPaused] = useState(false);
   const [cycleCount, setCycleCount] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [speed, setSpeed] = useState<number>(1);
 
   const modes: Record<string, any> = {
     // 1. BREATHWORK
@@ -191,9 +192,9 @@ export default function BreathingRing() {
          }
          return prev - 1;
       });
-    }, 1000);
+    }, 1000 / speed);
     return () => clearInterval(timer);
-  }, [mode, isPaused, isCompleted]);
+  }, [mode, isPaused, isCompleted, speed]);
 
   useEffect(() => {
      const maxCycles = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
@@ -271,6 +272,44 @@ export default function BreathingRing() {
     }
   };
 
+  const handlePrev = () => {
+      if (isCompleted) {
+         setIsCompleted(false);
+         setCycleCount((modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3)) - 1);
+         setStepIdx(modes[mode].steps.length - 1);
+         setTimeLeft(-1);
+         return;
+      }
+      setStepIdx(curr => {
+          if (curr === 0) {
+              if (cycleCount > 0) {
+                  setCycleCount(c => c - 1);
+                  return modes[mode].steps.length - 1;
+              }
+              return 0; 
+          }
+          return curr - 1;
+      });
+      setTimeLeft(-1);
+  };
+
+  const handleNext = () => {
+      if (isCompleted) return;
+      let nextCycleFound = false;
+      setStepIdx(curr => {
+          const nextIdx = curr + 1;
+          if (nextIdx >= modes[mode].steps.length) {
+              nextCycleFound = true;
+              return 0;
+          }
+          return nextIdx;
+      });
+      if (nextCycleFound) {
+          setCycleCount(c => c + 1);
+      }
+      setTimeLeft(-1);
+  };
+
   const colors = {
       teal: { glow: '#14b8a6', ringBorder: 'rgba(20, 184, 166, 0.5)', ringBg: 'rgba(13, 148, 136, 0.2)', shadow: 'rgba(45,212,191,0.3)', text: 'text-teal-200' },
       indigo: { glow: '#6366f1', ringBorder: 'rgba(99, 102, 241, 0.5)', ringBg: 'rgba(67, 56, 202, 0.2)', shadow: 'rgba(129,140,248,0.3)', text: 'text-indigo-200' },
@@ -287,7 +326,7 @@ export default function BreathingRing() {
     <div className="flex flex-col items-center justify-between p-4 md:p-8 w-full max-w-xl mx-auto h-full relative overflow-hidden">
       
       {/* Sleek Top Controls */}
-      <div className="flex items-center justify-between w-full mb-6 z-50">
+      <div className="flex items-center justify-center w-full mb-4 md:mb-6 z-50">
         <div className="flex bg-white/5 rounded-full p-1 border border-white/10 backdrop-blur-md">
            {['breath', 'upper', 'full'].map((cat) => (
                <button 
@@ -301,30 +340,6 @@ export default function BreathingRing() {
                    {getCatLabel(cat)}
                </button>
            ))}
-        </div>
-
-        <div className="flex gap-2">
-           <button 
-             onClick={() => setIsVoiceOn(!isVoiceOn)}
-             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isVoiceOn ? 'bg-white/10 border-white/20 text-white' : 'bg-transparent border-white/5 text-white/30 hover:bg-white/10'}`}
-           >
-             {isVoiceOn ? <Ear size={16} /> : <EarOff size={16} />}
-           </button>
-           <button 
-             onClick={() => {
-                if (isCompleted) {
-                   setStepIdx(0);
-                   setCycleCount(0);
-                   setIsCompleted(false);
-                   setTimeLeft(modes[mode].steps[0].time);
-                } else {
-                   setIsPaused(!isPaused);
-                }
-             }}
-             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isCompleted ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-200' : isPaused ? 'bg-orange-500/20 border-orange-500/30 text-orange-200' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
-           >
-             {isCompleted ? <RotateCcw size={16} /> : isPaused ? <Play size={16} fill="currentColor" className="ml-0.5" /> : <Pause size={16} fill="currentColor" />}
-           </button>
         </div>
       </div>
 
@@ -411,6 +426,34 @@ export default function BreathingRing() {
             </AnimatePresence>
           </div>
         </motion.div>
+      </div>
+
+      {/* FLOAT MEDIA CONTROLS BAR */}
+      <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-full px-5 py-2.5 my-5 md:my-6 z-50 backdrop-blur-xl shadow-xl shrink-0">
+          <button onClick={() => setSpeed(s => s === 1 ? 1.5 : s === 1.5 ? 2 : 1)} className="text-[10px] md:text-sm font-bold text-white/50 hover:text-white w-8 shrink-0 flex justify-center transition-colors">
+             {speed}x
+          </button>
+
+          <button onClick={handlePrev} className="p-2 text-white/50 hover:text-white transition-colors"><SkipBack size={18} fill="currentColor" /></button>
+
+          <button onClick={() => {
+             if (isCompleted) {
+                setStepIdx(0);
+                setCycleCount(0);
+                setIsCompleted(false);
+                setTimeLeft(modes[mode].steps[0].time);
+             } else {
+                setIsPaused(!isPaused);
+             }
+          }} className={`p-3 rounded-full transition-all shadow-lg ${isCompleted ? 'bg-emerald-500/30 text-emerald-200' : isPaused ? 'bg-orange-500/30 text-orange-200' : 'bg-white/20 text-white hover:bg-white/30'}`}>
+             {isCompleted ? <RotateCcw size={20}/> : isPaused ? <Play size={20} fill="currentColor" className="ml-0.5" /> : <Pause size={20} fill="currentColor"/>}
+          </button>
+
+          <button onClick={handleNext} className="p-2 text-white/50 hover:text-white transition-colors"><SkipForward size={18} fill="currentColor" /></button>
+
+          <button onClick={() => setIsVoiceOn(!isVoiceOn)} className={`w-8 flex justify-center shrink-0 transition-colors ${isVoiceOn ? 'text-white' : 'text-white/30'}`}>
+             {isVoiceOn ? <Ear size={18} /> : <EarOff size={18} />}
+          </button>
       </div>
 
       {/* Routine Grid - Perfect Centering & Anti-Layout-Shift */}
