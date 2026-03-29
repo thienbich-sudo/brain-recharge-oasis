@@ -24,14 +24,24 @@ export default function App() {
 
   // PWA Native Back Navigation Support
   useEffect(() => {
-    // Replace initial state so popstate has a target
-    window.history.replaceState({ module: 'audio' }, '');
+    // 1. Trap the user so they can't swipe out of the PWA
+    // Push a dummy "root" state that we never actually show.
+    window.history.replaceState({ module: 'trapper' }, '');
+    window.history.pushState({ module: 'audio' }, '');
     
     const handlePopState = (e: PopStateEvent) => {
       if (e.state && e.state.module) {
-        setActiveModule(e.state.module);
+        if (e.state.module === 'trapper') {
+           // Trapped! Push them forward again so next 'back' is trapped too
+           window.history.pushState({ module: 'audio' }, '');
+           setActiveModule('audio');
+        } else {
+           setActiveModule(e.state.module);
+        }
       } else {
-        setActiveModule('audio'); // Fallback
+        // Unknown state fallback, effectively a trap
+        window.history.pushState({ module: 'audio' }, '');
+        setActiveModule('audio'); 
       }
     };
     
@@ -91,13 +101,13 @@ export default function App() {
       >
         <div className="w-full flex-1 flex items-center justify-center overflow-hidden relative md:rounded-2xl pb-24 md:pb-0 z-10 md:bg-black/20 md:border md:border-white/5">
           {/* BACKGROUND PERSISTENT AUDIO MODULES */}
-          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'audio' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-300 ${activeModule === 'audio' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
             <AudioPlayer />
           </div>
-          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'mixer' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-300 ${activeModule === 'mixer' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
             <AmbientMixer />
           </div>
-          <div className={`absolute inset-0 transition-opacity duration-700 ${activeModule === 'binaural' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
+          <div className={`absolute inset-0 transition-opacity duration-300 ${activeModule === 'binaural' ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'}`}>
             <BinauralGenerator />
           </div>
 

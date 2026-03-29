@@ -201,6 +201,14 @@ export default function BreathingRing() {
          setIsCompleted(true);
          stopTTS();
          setTimeLeft(0);
+         // Speak completion
+         if (isVoiceOn) {
+            playTTS({
+               vi: 'Thật tuyệt vời. Bạn đã hoàn tất bài tập này.',
+               en: 'Excellent. You have completed this exercise.',
+               zh: '太棒了。你已完成此练习。'
+            });
+         }
      }
   }, [cycleCount, mode, isCompleted]);
 
