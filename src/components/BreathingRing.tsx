@@ -164,6 +164,65 @@ export default function BreathingRing() {
     return c;
   };
 
+  const executeStepChange = (nStep: number, nCycle: number, nComplete: boolean, isForwardTick: boolean) => {
+      setStepIdx(nStep);
+      setCycleCount(nCycle);
+      setIsCompleted(nComplete);
+      
+      if (nComplete) {
+          setTimeLeft(0);
+          stopTTS();
+          if (isVoiceOn) {
+             playTTS({ vi: 'Thật tuyệt vời. Bạn đã hoàn tất bài tập này.', en: 'Excellent. You have completed this exercise.', zh: '太棒了。你已完成此练习。' });
+          }
+      } else {
+          setTimeLeft(modes[mode].steps[nStep].time);
+          let textObj = { ...modes[mode].steps[nStep].text };
+          if (isForwardTick && nStep === 0 && nCycle > 0) {
+               textObj = {
+                   vi: `Chuyển vòng ${nCycle + 1}. ` + textObj.vi,
+                   en: `Set ${nCycle + 1}. ` + textObj.en,
+                   zh: `第 ${nCycle + 1} 循环. ` + textObj.zh
+               };
+          }
+          if (!isPaused) {
+             stopTTS();
+             playTTS(textObj);
+          }
+      }
+  };
+
+  const handleNext = () => {
+      if (isCompleted) return;
+      const maxC = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
+      let nextStepIdx = stepIdx + 1;
+      let nextCycleCount = cycleCount;
+      if (nextStepIdx >= modes[mode].steps.length) {
+          nextStepIdx = 0;
+          nextCycleCount += 1;
+      }
+      executeStepChange(nextStepIdx, nextCycleCount, nextCycleCount >= maxC, true);
+  };
+
+  const handlePrev = () => {
+      const maxC = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
+      let nextStepIdx = stepIdx - 1;
+      let nextCycleCount = cycleCount;
+      
+      if (isCompleted) {
+          nextCycleCount = maxC - 1;
+          nextStepIdx = modes[mode].steps.length - 1;
+      } else if (nextStepIdx < 0) {
+          if (nextCycleCount > 0) {
+              nextCycleCount -= 1;
+              nextStepIdx = modes[mode].steps.length - 1;
+          } else {
+              nextStepIdx = 0; 
+          }
+      }
+      executeStepChange(nextStepIdx, nextCycleCount, false, false);
+  };
+
   useEffect(() => {
     setStepIdx(0);
     setCycleCount(0);
@@ -172,73 +231,23 @@ export default function BreathingRing() {
   }, [mode]);
 
   useEffect(() => {
-    if (isPaused || isCompleted) return;
+    if (isPaused || isCompleted || timeLeft <= 0) return;
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-         if (prev <= 1) {
-            let nextCycleFound = false;
-            setStepIdx(curr => {
-                const nextIdx = curr + 1;
-                if (nextIdx >= modes[mode].steps.length) {
-                    nextCycleFound = true;
-                    return 0;
-                }
-                return nextIdx;
-            });
-            if (nextCycleFound) {
-                setCycleCount(c => c + 1);
-            }
-            return -1; 
-         }
-         return prev - 1;
-      });
+       setTimeLeft(prev => prev - 1);
     }, 1000 / speed);
     return () => clearInterval(timer);
-  }, [mode, isPaused, isCompleted, speed]);
+  }, [isPaused, isCompleted, speed, timeLeft]);
 
   useEffect(() => {
-     const maxCycles = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
-     if (cycleCount >= maxCycles && !isCompleted) {
-         setIsCompleted(true);
-         stopTTS();
-         setTimeLeft(0);
-         // Speak completion
-         if (isVoiceOn) {
-            playTTS({
-               vi: 'Thật tuyệt vời. Bạn đã hoàn tất bài tập này.',
-               en: 'Excellent. You have completed this exercise.',
-               zh: '太棒了。你已完成此练习。'
-            });
-         }
+     if (timeLeft === 0 && !isCompleted && !isPaused) {
+         handleNext();
      }
-  }, [cycleCount, mode, isCompleted]);
-
-  const speak = (textObj: any) => {
-     if (!isVoiceOn || isPaused) return stopTTS();
-     playTTS(textObj);
-  };
+  }, [timeLeft, isCompleted, isPaused]);
 
   useEffect(() => {
-    if (timeLeft === -1 && !isCompleted) {
-        setTimeLeft(modes[mode].steps[stepIdx].time);
-        
-        let textObj = { ...modes[mode].steps[stepIdx].text };
-        const maxC = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
-        
-        if (stepIdx === 0 && cycleCount > 0 && cycleCount < maxC) {
-             textObj = {
-                 vi: `Chuyển vòng ${cycleCount + 1}. ` + textObj.vi,
-                 en: `Set ${cycleCount + 1}. ` + textObj.en,
-                 zh: `第 ${cycleCount + 1} 循环. ` + textObj.zh
-             };
-        }
-        
-        if (!isPaused) speak(textObj);
-    }
-  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused, isCompleted, cycleCount]);
-
-  useEffect(() => {
-     if (!isPaused) speak(modes[mode].steps[0].text);
+     if (!isPaused && stepIdx === 0 && cycleCount === 0 && !isCompleted) {
+         speak(modes[mode].steps[0].text);
+     }
   }, [mode, lang, isVoiceOn]);
 
   // Global Audio Cleanup and Pause handling
@@ -272,42 +281,9 @@ export default function BreathingRing() {
     }
   };
 
-  const handlePrev = () => {
-      if (isCompleted) {
-         setIsCompleted(false);
-         setCycleCount((modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3)) - 1);
-         setStepIdx(modes[mode].steps.length - 1);
-         setTimeLeft(-1);
-         return;
-      }
-      setStepIdx(curr => {
-          if (curr === 0) {
-              if (cycleCount > 0) {
-                  setCycleCount(c => c - 1);
-                  return modes[mode].steps.length - 1;
-              }
-              return 0; 
-          }
-          return curr - 1;
-      });
-      setTimeLeft(-1);
-  };
-
-  const handleNext = () => {
-      if (isCompleted) return;
-      let nextCycleFound = false;
-      setStepIdx(curr => {
-          const nextIdx = curr + 1;
-          if (nextIdx >= modes[mode].steps.length) {
-              nextCycleFound = true;
-              return 0;
-          }
-          return nextIdx;
-      });
-      if (nextCycleFound) {
-          setCycleCount(c => c + 1);
-      }
-      setTimeLeft(-1);
+  const speak = (textObj: any) => {
+     if (!isVoiceOn || isPaused) return stopTTS();
+     playTTS(textObj);
   };
 
   const colors = {
