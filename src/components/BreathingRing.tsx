@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause } from 'lucide-react';
+import { Wind, Activity, PersonStanding, Flame, Ear, EarOff, Play, Pause, Trophy, RotateCcw } from 'lucide-react';
 import ZenAvatar from './ZenAvatar';
 import { useLanguage } from '../i18n/LangContext';
 
@@ -13,6 +13,8 @@ export default function BreathingRing() {
   const [timeLeft, setTimeLeft] = useState(5);
   const [isVoiceOn, setIsVoiceOn] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [cycleCount, setCycleCount] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const modes: Record<string, any> = {
     // 1. BREATHWORK
@@ -163,22 +165,44 @@ export default function BreathingRing() {
 
   useEffect(() => {
     setStepIdx(0);
+    setCycleCount(0);
+    setIsCompleted(false);
     setTimeLeft(modes[mode].steps[0].time);
   }, [mode]);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || isCompleted) return;
     const timer = setInterval(() => {
       setTimeLeft(prev => {
          if (prev <= 1) {
-            setStepIdx(curr => (curr + 1) % modes[mode].steps.length);
+            let nextCycleFound = false;
+            setStepIdx(curr => {
+                const nextIdx = curr + 1;
+                if (nextIdx >= modes[mode].steps.length) {
+                    nextCycleFound = true;
+                    return 0;
+                }
+                return nextIdx;
+            });
+            if (nextCycleFound) {
+                setCycleCount(c => c + 1);
+            }
             return -1; 
          }
          return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [mode, isPaused]);
+  }, [mode, isPaused, isCompleted]);
+
+  useEffect(() => {
+     const maxCycles = modes[mode].cycles || (modes[mode].cat === 'breath' ? 4 : 3);
+     if (cycleCount >= maxCycles && !isCompleted) {
+         setIsCompleted(true);
+         stopTTS();
+         setTimeLeft(0);
+     }
+  }, [cycleCount, mode, isCompleted]);
 
   const speak = (textObj: any) => {
      if (!isVoiceOn || isPaused) return stopTTS();
@@ -186,11 +210,11 @@ export default function BreathingRing() {
   };
 
   useEffect(() => {
-    if (timeLeft === -1) {
+    if (timeLeft === -1 && !isCompleted) {
         setTimeLeft(modes[mode].steps[stepIdx].time);
         if (!isPaused) speak(modes[mode].steps[stepIdx].text);
     }
-  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused]);
+  }, [stepIdx, timeLeft, mode, lang, isVoiceOn, isPaused, isCompleted]);
 
   useEffect(() => {
      if (!isPaused) speak(modes[mode].steps[0].text);
@@ -266,20 +290,29 @@ export default function BreathingRing() {
              {isVoiceOn ? <Ear size={16} /> : <EarOff size={16} />}
            </button>
            <button 
-             onClick={() => setIsPaused(!isPaused)}
-             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isPaused ? 'bg-orange-500/20 border-orange-500/30 text-orange-200' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
+             onClick={() => {
+                if (isCompleted) {
+                   setStepIdx(0);
+                   setCycleCount(0);
+                   setIsCompleted(false);
+                   setTimeLeft(modes[mode].steps[0].time);
+                } else {
+                   setIsPaused(!isPaused);
+                }
+             }}
+             className={`p-2.5 md:p-3 rounded-full transition-all border shadow-lg ${isCompleted ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-200' : isPaused ? 'bg-orange-500/20 border-orange-500/30 text-orange-200' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}`}
            >
-             {isPaused ? <Play size={16} fill="currentColor" className="ml-0.5" /> : <Pause size={16} fill="currentColor" />}
+             {isCompleted ? <RotateCcw size={16} /> : isPaused ? <Play size={16} fill="currentColor" className="ml-0.5" /> : <Pause size={16} fill="currentColor" />}
            </button>
         </div>
       </div>
 
       <div className="text-center w-full z-20 shrink-0 mt-4 md:mt-8">
         <h2 className={`text-2xl md:text-4xl font-display font-light mb-1 transition-colors duration-500 max-w-sm mx-auto ${c.text}`}>
-          {phaseText}
+          {isCompleted ? l({vi: 'Tuyệt Vời', en: 'Excellent', zh: '太棒了'}) : phaseText}
         </h2>
         <p className="text-[10px] md:text-xs font-sans text-white/40 uppercase tracking-widest mt-2 px-4">
-          — {l(modes[mode].desc)} —
+          — {isCompleted ? l({vi: `Đã hoàn thành ${cycleCount} vòng bài tập`, en: `Completed ${cycleCount} cycles`, zh: `已完成 ${cycleCount} 个循环`}) : l(modes[mode].desc)} —
         </p>
       </div>
 
@@ -309,20 +342,26 @@ export default function BreathingRing() {
         >
           {/* Avatar / Iconography */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-2 opacity-80 pointer-events-none">
-             <ZenAvatar anim={currentStep.anim} mode={mode} />
+             {isCompleted ? (
+                 <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }} className="flex flex-col items-center mt-[-10px]">
+                     <Trophy size={48} strokeWidth={1.5} className="text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+                 </motion.div>
+             ) : (
+                 <ZenAvatar anim={currentStep.anim} mode={mode} />
+             )}
           </div>
 
           <div className="absolute bottom-6 w-full flex justify-center pointer-events-none">
             <AnimatePresence mode="popLayout" initial={false}>
                 <motion.span 
-                    key={`${stepIdx}-${timeLeft === -1 ? '0' : timeLeft}`}
+                    key={isCompleted ? 'done' : `${stepIdx}-${timeLeft === -1 ? '0' : timeLeft}`}
                     initial={{ opacity: 0, y: 5, filter: "blur(4px)" }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     exit={{ opacity: 0, y: -5, filter: "blur(4px)" }}
                     transition={{ duration: 0.2 }}
-                    className="text-2xl md:text-3xl font-display font-light text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]"
+                    className={`font-display font-light text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] ${isCompleted ? 'text-lg md:text-xl tracking-widest font-bold uppercase' : 'text-2xl md:text-3xl'}`}
                 >
-                    {timeLeft === -1 ? '' : timeLeft}
+                    {isCompleted ? l({vi: 'HOÀN TẤT', en: 'COMPLETED', zh: '已完成'}) : (timeLeft === -1 ? '' : timeLeft)}
                 </motion.span>
             </AnimatePresence>
           </div>

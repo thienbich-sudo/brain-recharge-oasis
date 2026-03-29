@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Headphones, Droplets, Wind, Flame, Radio, SlidersHorizontal, Trees } from 'lucide-react';
 
@@ -22,10 +22,32 @@ export default function App() {
   // Gamification State (The Zen Garden Tracker)
   const [seeds, setSeeds] = useState(0);
 
+  // PWA Native Back Navigation Support
+  useEffect(() => {
+    // Replace initial state so popstate has a target
+    window.history.replaceState({ module: 'audio' }, '');
+    
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.module) {
+        setActiveModule(e.state.module);
+      } else {
+        setActiveModule('audio'); // Fallback
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateTo = (moduleId: string) => {
+    if (activeModule === moduleId) return;
+    window.history.pushState({ module: moduleId }, '');
+    setActiveModule(moduleId);
+  };
+
   const handleCheckIn = (mood: string) => {
      setHasCheckedIn(true);
-     // Enable AutoPilot Journey
-     setActiveModule(`autopilot_${mood}`);
+     navigateTo(`autopilot_${mood}`);
   };
 
   const navItems = [
@@ -85,7 +107,7 @@ export default function App() {
           {activeModule === 'dump' && <div className="absolute inset-0 z-10"><BrainDump onBurn={() => setSeeds(s => s + 1)} /></div>}
           {activeModule.startsWith('autopilot_') && (
              <div className="absolute inset-0 z-50">
-               <AutoPilotFlow mood={activeModule.split('_')[1]} onExit={() => setActiveModule('audio')} />
+               <AutoPilotFlow mood={activeModule.split('_')[1]} onExit={() => navigateTo('audio')} />
              </div>
           )}
         </div>
@@ -98,7 +120,7 @@ export default function App() {
              <motion.button 
                whileHover={{ scale: 1.1, y: -2, transition: { type: "spring", stiffness: 400, damping: 10 } }}
                whileTap={{ scale: 0.9, transition: { type: "spring", stiffness: 400, damping: 10 } }}
-               key={item.id} onClick={() => setActiveModule(item.id)} title={item.label}
+               key={item.id} onClick={() => navigateTo(item.id)} title={item.label}
                className={`p-3 sm:p-4 rounded-full transition-colors duration-300 flex-shrink-0 snap-center
                  ${activeModule === item.id ? 'bg-white/20 text-white shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-white/30' : 'bg-transparent text-white/40 hover:text-white/80 hover:bg-white/10 shrink-0'}`}
              >
